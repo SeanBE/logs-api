@@ -10,7 +10,8 @@ class BaseConfig(object):
     RESTPLUS_ERROR_404_HELP = False
 
     MONGO_DBNAME = 'gym'
-
+    # MONGO_PASSWORD = 'strength'
+    # MONGO_USERNAME = 'jdoe'
 class DevConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = False

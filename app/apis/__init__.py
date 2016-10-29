@@ -1,13 +1,13 @@
 from flask import current_app, Blueprint
 from flask_restplus import Api
-from .namespace1 import api as ns1
+from .workouts import api as workout_api
 
 blueprint = Blueprint('api', __name__)
 
 api = Api(blueprint,
-    title='Strength Api',
+    title='STRENGTH API',
     version='1.0',
-    description='Description',
+    description='Lifting all the heavy shit.',
 )
 
-api.add_namespace(ns1)
+api.add_namespace(workout_api)
