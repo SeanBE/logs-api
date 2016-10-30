@@ -34,12 +34,13 @@ class Workouts(Resource):
         # TODO not efficient.
         return list(mongo.db.workouts.find())
 
-    @api.doc(False)
+    # @api.doc(False)
     @api.expect(workout)
     @api.marshal_with(workout, code=201)
+    @api.response(201, 'Workout successfully created.')
     def post(self):
-        result = mongo.db.workouts.insert_one(self.api.payload), 201
-        return self.api.payload
+        mongo.db.workouts.insert_one(self.api.payload), 201
+        return None, 201
 
 @api.route('/<int:id>')
 @api.response(404, 'Workout not found')
@@ -56,15 +57,16 @@ class Workout(Resource):
 
         api.abort(404, "Workout #{} doesn't exist".format(id))
 
-    @api.doc(False)
-    @api.response(204, 'Workout deleted')
+    # @api.doc(False)
+    @api.response(204, 'Workout successfully deleted.')
     def delete(self, id):
-        result = mongo.db.workouts.delete_one({'id':id})
-        return '', 204
+        mongo.db.workouts.delete_one({'id':id})
+        return None, 204
 
     # @api.doc(False)
     @api.expect(workout)
     @api.marshal_with(workout)
+    @api.response(204, 'Workout successfully updated.')
     def put(self, id):
-        result = mongo.db.workouts.replace_one({'id': id}, self.api.payload)
-        return self.api.payload
+        mongo.db.workouts.replace_one({'id': id}, self.api.payload)
+        return None, 204
