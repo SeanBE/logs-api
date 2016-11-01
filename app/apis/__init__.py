@@ -1,6 +1,6 @@
 from flask import current_app, Blueprint
 from flask_restplus import Api
-from .workouts import api as workout_api
+from .endpoints import api as workout_api
 
 blueprint = Blueprint('api', __name__)
 

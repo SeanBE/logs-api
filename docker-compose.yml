@@ -9,6 +9,20 @@ services:
     volumes:
       - .:/application
     links:
-      - db
-  db:
+      - mongo
+      - postgres
+    depends_on:
+      - mongo
+      - postgres
+  mongo:
     image: mongo:3.0.2
+    volumes:
+      - data-mongo:/data/db
+  postgres:
+    image: "postgres:9.4"
+    volumes:
+      - data-postgres:/var/lib/postgresql/data
+
+volumes:
+  data-postgres:
+  data-mongo:

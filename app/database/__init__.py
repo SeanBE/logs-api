@@ -1,34 +1,7 @@
 from flask_pymongo import PyMongo
-db = PyMongo()
+from flask_sqlalchemy import SQLAlchemy
 
+mongo = PyMongo()
+psql = SQLAlchemy()
 
-# class WorkoutService(object):
-#
-#     def __init__(self):
-#         mongo = PyMongo()
-#         psql = None
-#
-#
-#     def init_app(self, app):
-#         mongo.init_app(app)
-#         psql.init_app(app)
-#
-#
-#     def get(self):
-#         pass
-#
-#
-#     def get(self, id):
-#         pass
-#
-#
-#     def delete(self):
-#         pass
-#
-#
-#     def create(self):
-#         pass
-#
-#
-#     def update(self):
-#         pass
+from .models import Workout, Exercise
