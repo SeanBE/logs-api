@@ -20,7 +20,8 @@ exercise = api.model('Exercise', {
 workout = api.model('Workout', {
     'id': fields.Integer(readOnly=True, description="Unique workout identifier"),
     'username': fields.String(required=True, example="John123", description="This workout belongs to the user with this username"),
-    'date_completed': fields.Date(required=True, description="Workout needs to be completed on this day"),
+    'date_proposed': fields.Date(required=True, description="Workout planned for this day"),
+    'date_completed': fields.Date(required=True, description="Workout completed on this day"),
     'exercises': fields.List(fields.Nested(exercise), description="List of exercises for this workout")
 })
 
@@ -48,26 +49,25 @@ class Workouts(Resource):
         return None, 201
 
 
-@api.route('/<username>/<date>')
 # @api.doc(False)
+@api.route('/<username>/<date>')
 @api.response(404, 'Workout not found')
-@api.param('username', '....username workout bla')
-@api.param('date', '....date workout bla')
+@api.param('username', 'Workout username')
+@api.param('date', 'Workout date')
 class Workout(Resource):
 
     @api.doc('get_workout')
     @api.marshal_with(workout)
-    @api.param('id', 'The workout identifier')
-    def get(self, id):
+    def get(self, username, date):
         """
         Returns a workout.
         """
-        workout = service.find(id)
+        workout = service.find(username, date)
 
         if workout:
             return workout
 
-        api.abort(404, "Workout #{} doesn't exist".format(id))
+        api.abort(404, "Workout for {} on {} doesn't exist".format(username, date))
 
 
     @api.response(204, 'Workout successfully deleted.')
@@ -81,10 +81,9 @@ class Workout(Resource):
 
     @api.expect(workout)
     @api.response(204, 'Workout successfully updated.')
-    @api.param('id', 'The workout identifier')
-    def put(self, id):
+    def put(self, username, date):
         """
         Updates a workout.
         """
-        service.update(id, self.api.payload)
+        service.update(username, date, self.api.payload)
         return None, 204

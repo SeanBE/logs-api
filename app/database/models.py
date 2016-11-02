@@ -8,16 +8,18 @@ class Workout(db.Model):
 
     username = db.Column(db.String) # TODO multiple users.
 
+    date_proposed = db.Column(db.Date, nullable=False)
     date_completed = db.Column(db.Date)
     date_created = db.Column(db.DateTime, nullable=False)
 
-    exercises_completed = db.relationship('Exercise',
+    exercises = db.relationship('ExerciseEntry',
         backref=db.backref('workout', cascade="all"), lazy='joined')
 
-    def __init__(self, username, date_created=None):
+    def __init__(self, username, date_proposed, date_created=None):
         self.username = username
-        self.date_completed = None
 
+        self.date_completed = None
+        self.date_proposed = date_proposed
         if date_created is None:
             self.date_created = datetime.utcnow()
 
@@ -34,15 +36,19 @@ class ExerciseEntry(db.Model):
 
     # Unique constraint on these three.
     set_num = db.Column(db.Integer, nullable=False)
+
+    exercise = db.relationship('Exercise')
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+
     workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'), nullable=False  )
 
     reps = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text)
 
-    def __init__(self, name, set_num, reps, weight, comment):
-        self.name = name
+    def __init__(self, exercise, set_num, reps, weight, comment=None):
+        self.exercise = exercise
+
         self.set_num = set_num
         self.reps = reps
         self.weight = weight

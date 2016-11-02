@@ -1,10 +1,8 @@
 # TODO
 
-Docker for psql and mongo.
-
 Make sure deletes, updates, creates, and gets all good.
 
-set workout date completed to null?
+Docker for psql and mongo.
 
 MONGO IDS???
 
