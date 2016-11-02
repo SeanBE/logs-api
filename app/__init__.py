@@ -1,5 +1,6 @@
-from flask import Flask
 from . import config
+from flask import Flask
+
 from app.database import mongo, psql
 from app.apis import blueprint as api
 

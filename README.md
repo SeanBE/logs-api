@@ -1,15 +1,13 @@
 # TODO
-
-Make sure deletes, updates, creates, and gets all good.
-
 Docker for psql and mongo.
 
-MONGO IDS???
+How to incorporate psql??
+
+Bring in tests.
 
 
 Nginx
 Gunicorn (or stick to cherry?)
-
 
 Auth.
 

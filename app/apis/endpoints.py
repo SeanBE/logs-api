@@ -1,7 +1,5 @@
 from flask_restplus import Namespace, Resource, fields
-
-from .serializers import workout
-from app.database.services import service
+from app.database import mongo_service as service
 
 api = Namespace('workouts', description='Workout operations')
 
@@ -16,17 +14,15 @@ exercise = api.model('Exercise', {
     'sets': fields.List(fields.Nested(exercise_set), required=True, description="List of sets required to be completed with this exercise")
 })
 
-# TODO increment id???
 workout = api.model('Workout', {
-    'id': fields.Integer(readOnly=True, description="Unique workout identifier"),
     'username': fields.String(required=True, example="John123", description="This workout belongs to the user with this username"),
     'date_proposed': fields.Date(required=True, description="Workout planned for this day"),
-    'date_completed': fields.Date(required=True, description="Workout completed on this day"),
+    'date_completed': fields.Date(description="Workout completed on this day"),
     'exercises': fields.List(fields.Nested(exercise), description="List of exercises for this workout")
 })
 
-@api.route('/')
 # @api.doc(False)
+@api.route('/')
 class Workouts(Resource):
 
     @api.doc('list_workouts')
@@ -62,7 +58,7 @@ class Workout(Resource):
         """
         Returns a workout.
         """
-        workout = service.find(username, date)
+        workout = service.get(username, date)
 
         if workout:
             return workout

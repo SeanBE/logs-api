@@ -1,5 +1,5 @@
+from . import psql as db
 from datetime import datetime
-from services import psql as db
 
 class Workout(db.Model):
     __tablename__ = 'workout'
@@ -12,8 +12,7 @@ class Workout(db.Model):
     date_completed = db.Column(db.Date)
     date_created = db.Column(db.DateTime, nullable=False)
 
-    exercises = db.relationship('ExerciseEntry',
-        backref=db.backref('workout', cascade="all"), lazy='joined')
+    exercises = db.relationship('ExerciseEntry', cascade = "all,delete", backref=db.backref('workout'), lazy='joined')
 
     def __init__(self, username, date_proposed, date_created=None):
         self.username = username
@@ -38,9 +37,9 @@ class ExerciseEntry(db.Model):
     set_num = db.Column(db.Integer, nullable=False)
 
     exercise = db.relationship('Exercise')
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+    exercise_id = db.Column (db.Integer, db.ForeignKey('exercise.id'), nullable=False)
 
-    workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'), nullable=False  )
+    workout_id = db.Column(db.Integer, db.ForeignKey('workout.id'), nullable=False)
 
     reps = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
@@ -48,6 +47,7 @@ class ExerciseEntry(db.Model):
 
     def __init__(self, exercise, set_num, reps, weight, comment=None):
         self.exercise = exercise
+        self.exercise_id = exercise.id
 
         self.set_num = set_num
         self.reps = reps
@@ -62,7 +62,7 @@ class Exercise(db.Model):
     __tablename__ = 'exercise'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
 
     def __init__(self, name):
         self.name = name

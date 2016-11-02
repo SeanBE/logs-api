@@ -28,39 +28,39 @@ class ServiceTestCase(unittest.TestCase):
         db.session.commit()
 
         # Insert workouts.
-        completed_workout = Workout('John', '2016-11-01')
-        e1 = ExerciseEntry(bench_press, 0, 10, 120)
-        e2 = ExerciseEntry(bench_press, 1, 10, 140)
-        e3 = ExerciseEntry(bench_press, 2, 10, 160)
-        e4 = ExerciseEntry(deadlift, 0, 1, 200)
-        e5 = ExerciseEntry(deadlift, 1, 3, 220)
-        e6 = ExerciseEntry(deadlift, 2, 5, 240)
-
-        completed_workout.exercises = [e1,e2,e3,e4,e5,e6]
-        completed_workout.date_completed = '2016-11-02'
-
-        db.session.add(completed_workout)
-
-        new_workout = Workout('John', '2016-11-03')
-        e1 = ExerciseEntry(bench_press, 0, 10, 120)
-        e2 = ExerciseEntry(bench_press, 1, 10, 140)
-        e3 = ExerciseEntry(bench_press, 2, 10, 160)
-        e4 = ExerciseEntry(deadlift, 0, 1, 200)
-        e5 = ExerciseEntry(deadlift, 1, 3, 220)
-        e6 = ExerciseEntry(deadlift, 2, 5, 240)
-
-        new_workout.exercises = [e1,e2,e3,e4,e5,e6]
-
-        db.session.add(new_workout)
-
-        db.session.commit()
+        # completed_workout = Workout('John', '2016-11-01')
+        # e1 = ExerciseEntry(bench_press, 0, 10, 120)
+        # e2 = ExerciseEntry(bench_press, 1, 10, 140)
+        # e3 = ExerciseEntry(bench_press, 2, 10, 160)
+        # e4 = ExerciseEntry(deadlift, 0, 1, 200)
+        # e5 = ExerciseEntry(deadlift, 1, 3, 220)
+        # e6 = ExerciseEntry(deadlift, 2, 5, 240)
+        #
+        # completed_workout.exercises = [e1,e2,e3,e4,e5,e6]
+        # completed_workout.date_completed = '2016-11-02'
+        #
+        # db.session.add(completed_workout)
+        #
+        # new_workout = Workout('John', '2016-11-03')
+        # e1 = ExerciseEntry(bench_press, 0, 10, 120)
+        # e2 = ExerciseEntry(bench_press, 1, 10, 140)
+        # e3 = ExerciseEntry(bench_press, 2, 10, 160)
+        # e4 = ExerciseEntry(deadlift, 0, 1, 200)
+        # e5 = ExerciseEntry(deadlift, 1, 3, 220)
+        # e6 = ExerciseEntry(deadlift, 2, 5, 240)
+        #
+        # new_workout.exercises = [e1,e2,e3,e4,e5,e6]
+        #
+        # db.session.add(new_workout)
+        #
+        # db.session.commit()
 
 
     def tearDown(self):
         """Destroy blank temp database after each test"""
-        db.drop_all()
+        # db.drop_all()
 
-    
+
 
     # def test_service_get_all(self):
         # exercises = Exercise.query.first()
