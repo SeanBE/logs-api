@@ -8,6 +8,10 @@ class DevConfig(BaseConfig):
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = "postgresql:///strength"
 
+class TestConfig(BaseConfig):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "postgresql:///strength"
+
 class ProdConfig(BaseConfig):
     DEBUG = False
     WTF_CSRF_ENABLED = True
