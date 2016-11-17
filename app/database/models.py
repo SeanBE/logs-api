@@ -12,11 +12,11 @@ class Workout(db.Model):
     date_created = db.Column(db.DateTime, nullable=False)
     exercises = db.relationship('ExerciseEntry', cascade = "all,delete", backref=db.backref('workout'), lazy='joined')
 
-    def __init__(self, date_proposed, exercises, date_completed=None, date_created=None):
+    def __init__(self, date_proposed, exercises=None, date_completed=None, date_created=None):
 
-        self.date_completed = date_completed
-        self.exercises = exercises
         # TODO order exercises
+        self.exercises = exercises or []
+        self.date_completed = date_completed
         self.date_proposed = date_proposed
 
         if date_created is None:

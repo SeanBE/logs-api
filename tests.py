@@ -1,77 +1,84 @@
 import unittest
+from random import randint
+from datetime import datetime
 
-from flask import json
 from app import create_app, config
 from app.database import db
 from app.database.models import Exercise, ExerciseEntry, Workout
+from app.database.services import DatabaseService
+
+
+EXERCISES = ['Bench Press', 'Squat', 'Deadlift']
+
 
 class ServiceTestCase(unittest.TestCase):
 
     def setUp(self):
-        """
-        Creates a new database for the unit test to use
-        """
         self.app = create_app(config.TestConfig)
         db.app = self.app
         self.app = self.app.test_client()
 
+        db.session.remove()
+        db.drop_all()
         db.create_all()
-        self.populate_db()
 
-    def populate_db(self):
+        self.add_exercises(EXERCISES)
+        self.add_workouts()
 
+    def add_exercises(self, exercises):
+        for exercise_name in exercises:
+            exercise = Exercise(name=exercise_name)
+            db.session.add(exercise)
+
+        db.session.commit()
+
+    def create_sets(self, ex_name):
+
+        entries = []
+
+        for set_num in range(3):
+            reps = randint(0, 12)
+            weight = randint(0, 200)
+
+            entry = ExerciseEntry(ex_name, set_num, reps, weight, 'Comment')
+            entries.append(entry)
+
+        return entries
+
+    def add_workouts(self):
+
+        for proposed_date in ['2016-11-01', '2016-11-02', '2016-11-03']:
+            workout = Workout(create_date(proposed_date))
+
+            for exercise_name in EXERCISES:
+                exercise_sets = self.create_sets(exercise_name)
+                workout.exercises.extend(exercise_sets)
+
+            db.session.add(workout)
+
+        db.session.commit()
 
     def tearDown(self):
-        """
-        Ensures that the database is emptied for next unit test
-        """
         db.session.remove()
         db.drop_all()
 
+    def test_get_all_exercises(self):
+        workouts = DatabaseService().get_list()
+        assert len(workouts) == 3
+
+    def test_exercises_exist(self):
+        # TODO remove.
+        squat = Exercise.query.filter_by(name='Squat').first()
+        assert squat is not None
+
+    def test_workouts_exist(self):
+        # TODO remove.
+        workout = Workout.query.filter_by(date_proposed='2016-11-01').first()
+        assert workout is not None
 
 
-        #
-        # # Insert exercises
-        # bench_press = Exercise(name='Bench Press')
-        # deadlift = Exercise(name='Deadlift')
-        # db.session.add(bench_press)
-        # db.session.add(deadlift)
-        #
-        # # Commit the changes for the users
-        # db.session.commit()
-
-        # Insert workouts.
-        # completed_workout = Workout('John', '2016-11-01')
-        # e1 = ExerciseEntry(bench_press, 0, 10, 120)
-        # e2 = ExerciseEntry(bench_press, 1, 10, 140)
-        # e3 = ExerciseEntry(bench_press, 2, 10, 160)
-        # e4 = ExerciseEntry(deadlift, 0, 1, 200)
-        # e5 = ExerciseEntry(deadlift, 1, 3, 220)
-        # e6 = ExerciseEntry(deadlift, 2, 5, 240)
-        #
-        # completed_workout.exercises = [e1,e2,e3,e4,e5,e6]
-        # completed_workout.date_completed = '2016-11-02'
-        #
-        # db.session.add(completed_workout)
-        #
-        # new_workout = Workout('John', '2016-11-03')
-        # e1 = ExerciseEntry(bench_press, 0, 10, 120)
-        # e2 = ExerciseEntry(bench_press, 1, 10, 140)
-        # e3 = ExerciseEntry(bench_press, 2, 10, 160)
-        # e4 = ExerciseEntry(deadlift, 0, 1, 200)
-        # e5 = ExerciseEntry(deadlift, 1, 3, 220)
-        # e6 = ExerciseEntry(deadlift, 2, 5, 240)
-        #
-        # new_workout.exercises = [e1,e2,e3,e4,e5,e6]
-        #
-        # db.session.add(new_workout)
-        #
-        # db.session.commit()
-
-
-    def test_index(self):
-        pass
-
+def create_date(date_string):
+    return datetime.strptime(date_string, "%Y-%m-%d")
 
 if __name__ == '__main__':
     unittest.main()

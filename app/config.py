@@ -10,7 +10,8 @@ class DevConfig(BaseConfig):
 
 class TestConfig(BaseConfig):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql:///strength"
+    WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
 
 class ProdConfig(BaseConfig):
     DEBUG = False
