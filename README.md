@@ -1,14 +1,10 @@
-# TODO
-Docker for psql and mongo.
+# TODO LIST
 
-How to incorporate psql??
-
+## HIGH
 Bring in tests.
+Frontend for workout admin.
+Test Docker for psql.
 
-
+## LOW
 Nginx
-Gunicorn (or stick to cherry?)
-
-Auth.
-
-create simple UI for adding new items.
+Auth
