@@ -1,5 +1,5 @@
 FROM python:2.7-slim
-MAINTAINER John Doe <jdoe@Jupiter.local.net>
+MAINTAINER Sean Lofgren <lofgren.sean@gmail.com>
 
 ENV INSTALL_PATH /application
 WORKDIR $INSTALL_PATH
