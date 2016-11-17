@@ -1,29 +1,29 @@
-from . import psql as db
+from . import db
 from datetime import datetime
+
 
 class Workout(db.Model):
     __tablename__ = 'workout'
 
     id = db.Column(db.Integer, primary_key=True)
 
-    username = db.Column(db.String) # TODO multiple users.
-
     date_proposed = db.Column(db.Date, nullable=False)
     date_completed = db.Column(db.Date)
     date_created = db.Column(db.DateTime, nullable=False)
-
     exercises = db.relationship('ExerciseEntry', cascade = "all,delete", backref=db.backref('workout'), lazy='joined')
 
-    def __init__(self, username, date_proposed, date_created=None):
-        self.username = username
+    def __init__(self, date_proposed, exercises, date_completed=None, date_created=None):
 
-        self.date_completed = None
+        self.date_completed = date_completed
+        self.exercises = exercises
+        # TODO order exercises
         self.date_proposed = date_proposed
+
         if date_created is None:
             self.date_created = datetime.utcnow()
 
     def __repr__(self):
-        return '<id {}>'.format(self.id)
+        return '<Workout {} has {} exercises.>'.format(self.date_proposed, len(self.exercises))
 
 
 class ExerciseEntry(db.Model):
@@ -45,9 +45,10 @@ class ExerciseEntry(db.Model):
     weight = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text)
 
-    def __init__(self, exercise, set_num, reps, weight, comment=None):
-        self.exercise = exercise
-        self.exercise_id = exercise.id
+    def __init__(self, exercise_name, set_num, reps, weight, comment=None):
+
+        self.exercise = Exercise.query.filter_by(name=exercise_name).first()
+        self.exercise_id = self.exercise.id
 
         self.set_num = set_num
         self.reps = reps
@@ -55,7 +56,7 @@ class ExerciseEntry(db.Model):
         self.comment = comment
 
     def __repr__(self):
-        return '<id {}>'.format(self.id)
+        return '<Exercise Entry {} set {} reps {} weight {} comment {}>'.format(self.exercise_id, self.set_num, self.reps, self.weight, self.comment)
 
 
 class Exercise(db.Model):
