@@ -13,7 +13,13 @@ class Workouts(Resource):
         Respond with 404 Not Found if fail to fetch single resource.
         """
         # TODO not efficient.
-        return Service.get_list(), 201
+
+        data, errors = Service.get_list()
+
+        if errors:
+            return None, 404
+
+        return data , 201
 
     def post(self):
         """

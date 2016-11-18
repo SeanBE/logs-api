@@ -10,12 +10,13 @@ class Workout(db.Model):
     date_proposed = db.Column(db.Date, nullable=False)
     date_completed = db.Column(db.Date)
     date_created = db.Column(db.DateTime, nullable=False)
-    exercises = db.relationship('ExerciseEntry', cascade = "all,delete", backref=db.backref('workout'), lazy='joined')
+    exercises = db.relationship('ExerciseEntry', cascade = "all,delete", backref=db.backref('workout'), lazy='joined', order_by=('ExerciseEntry.exercise_id'))
 
     def __init__(self, date_proposed, exercises=None, date_completed=None, date_created=None):
 
         # TODO order exercises
         self.exercises = exercises or []
+        # sorted(self.exercises, key=lambda x: (x.weight))
         self.date_completed = date_completed
         self.date_proposed = date_proposed
 

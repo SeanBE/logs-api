@@ -22,9 +22,9 @@ class ExerciseEntrySchema(Schema):
 
     @pre_dump(pass_many=True)
     def order_sets(self, data, many):
-        # TODO order by setnum?
         pass
 
+        
     @post_load
     def make_object(self, data):
         data['exercise_name'] = data.pop('exercise.name')
