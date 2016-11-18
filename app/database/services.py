@@ -90,9 +90,6 @@ class DatabaseService(object):
             data = WorkoutSerializer.fix_exercise_entries(data)
 
             for new_ex, exercise in zip(data['exercises'], workout.exercises):
-                # print new_ex
-                # print exercise
-
                 new_ex['exercise_name'] = new_ex.pop('exercise')
                 for key, value in new_ex.iteritems():
                     setattr(exercise, key, value)
