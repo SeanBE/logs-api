@@ -1,9 +1,9 @@
 import cherrypy
-from app import create_app
+from app import create_app,config
 
 if __name__ == '__main__':
 
-    app = create_app()
+    app = create_app(config.ProdConfig)
     cherrypy.tree.graft(app, "/")
 
     cherrypy.server.unsubscribe()

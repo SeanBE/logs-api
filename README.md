@@ -3,8 +3,12 @@
 
 ## TODO LIST
 ### HIGH
-Frontend for workout admin.
-Test Docker for psql.
+Auth
 ### LOW
 Nginx
-Auth
+
+Seed data?
+Flask migrate? What is the correct way? version control each change for prod db only?
+for other databases just drop and create?
+
+Environment variables or in the config file?

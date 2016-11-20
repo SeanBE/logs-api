@@ -1,5 +1,7 @@
 import os
 
+# TODO DATABASE URI NOT OPTIMAL!!
+
 class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -16,4 +18,4 @@ class TestConfig(BaseConfig):
 class ProdConfig(BaseConfig):
     DEBUG = False
     WTF_CSRF_ENABLED = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://psql/strength"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres@postgres/postgres"
