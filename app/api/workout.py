@@ -25,7 +25,6 @@ class Workout(Resource):
         Must return 200 OK Response if update successful. Response must include updated object from GET request.
         Return 404 Not Found when resource does not exist.
         """
-        # TODO request.json
         data, errors = DatabaseService().update(id, request.get_json(force=True))
 
         if errors:
@@ -37,7 +36,7 @@ class Workout(Resource):
         """
         Deletes a workout.
 
-        Return 204 No Content Status Code if successful. 
+        Return 204 No Content Status Code if successful.
         """
         errors = DatabaseService().delete(id)
 

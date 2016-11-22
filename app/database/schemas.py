@@ -24,7 +24,7 @@ class ExerciseEntrySchema(Schema):
     def order_sets(self, data, many):
         pass
 
-        
+
     @post_load
     def make_object(self, data):
         data['exercise_name'] = data.pop('exercise.name')
@@ -32,6 +32,7 @@ class ExerciseEntrySchema(Schema):
 
 
 class WorkoutSchema(Schema):
+
     # TODO URI/id
     date_created = fields.DateTime(dump_only=True)
     date_proposed = fields.Date(required=True)

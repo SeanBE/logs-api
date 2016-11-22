@@ -64,17 +64,37 @@ class ServiceTestCase(unittest.TestCase):
         db.drop_all()
 
     def test_get_all_exercises(self):
-        workouts, errors = DatabaseService().get_list()
+        workouts, errors = DatabaseService().get_list(10, 0)
 
         assert errors is None
         assert len(workouts) == 3
 
         workout = next((w for w in workouts if w[
-                       'date_proposed'] == '2016-11-01'), None)
+                       'date_proposed'] == DATES[0]), None)
 
         assert workout is not None
         assert EXERCISES[0] in workout['exercises'].keys()
         assert len(workout['exercises'].get(EXERCISES[0])) == 3
+
+    def test_get_all_with_limit(self):
+        workouts, _ = DatabaseService().get_list(2, 0)
+
+        assert len(workouts) == 2
+
+        workout = next((w for w in workouts if w[
+                       'date_proposed'] == DATES[-1]), None)
+
+        assert workout is None
+
+    def test_get_all_with_offset(self):
+        workouts, _ = DatabaseService().get_list(10, 1)
+
+        assert len(workouts) == 2
+
+        workout = next((w for w in workouts if w[
+                       'date_proposed'] == DATES[0]), None)
+
+        assert workout is None
 
     def test_get_exercise(self):
         w = Workout.query.filter_by(date_proposed='2016-11-01').first()

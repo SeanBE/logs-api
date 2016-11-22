@@ -1,6 +1,3 @@
-import os
-
-# TODO DATABASE URI NOT OPTIMAL!!
 
 class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -8,7 +5,7 @@ class BaseConfig(object):
 class DevConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = False
-    SQLALCHEMY_DATABASE_URI = "postgresql:///strength"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
 
 class TestConfig(BaseConfig):
     TESTING = True

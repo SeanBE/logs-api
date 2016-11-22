@@ -14,9 +14,7 @@ class Workout(db.Model):
 
     def __init__(self, date_proposed, exercises=None, date_completed=None, date_created=None):
 
-        # TODO order exercises
         self.exercises = exercises or []
-        # sorted(self.exercises, key=lambda x: (x.weight))
         self.date_completed = date_completed
         self.date_proposed = date_proposed
 
@@ -34,7 +32,6 @@ class ExerciseEntry(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # Unique constraint on these three.
     set_num = db.Column(db.Integer, nullable=False)
 
     exercise = db.relationship('Exercise')

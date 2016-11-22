@@ -9,12 +9,12 @@ WorkoutSerializer = WorkoutSchema()
 
 class DatabaseService(object):
 
-    def get_list(self):
+    def get_list(self, limit, offset):
         """
         Returns list of workouts.
         """
-        # TODO use offsets, limits, etc.
-        workouts = Workout.query.all()
+        workouts = Workout.query.limit(limit).offset(offset).all()
+
         data, errors = WorkoutSerializer.dump(workouts, many=True)
 
         if errors:
@@ -43,6 +43,7 @@ class DatabaseService(object):
         """
 
         # TODO Sort out errors.
+        # Validation process?
         workout, errors = WorkoutSerializer.load(data)
 
         if errors:
