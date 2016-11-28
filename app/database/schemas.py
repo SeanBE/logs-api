@@ -1,13 +1,13 @@
 from models import Workout, ExerciseEntry
 from collections import defaultdict
-from marshmallow import Schema, fields,pre_dump, post_dump, pre_load, post_load
+from marshmallow import Schema, fields, pre_dump, post_dump, pre_load, post_load
 
 
 class ExerciseEntrySchema(Schema):
     exercise = fields.String(attribute='exercise.name')
     reps = fields.Integer(required=True)
     set_num = fields.Integer(required=True)
-    weight = fields.Integer(required=True)
+    weight = fields.Integer(allow_none=True)
     comment = fields.String(allow_none=True)
 
     @post_dump(pass_many=True)
@@ -24,7 +24,6 @@ class ExerciseEntrySchema(Schema):
     def order_sets(self, data, many):
         pass
 
-
     @post_load
     def make_object(self, data):
         data['exercise_name'] = data.pop('exercise.name')
@@ -33,7 +32,7 @@ class ExerciseEntrySchema(Schema):
 
 class WorkoutSchema(Schema):
 
-    # TODO URI/id
+    uri = fields.String(dump_only=True, attribute="id")
     date_created = fields.DateTime(dump_only=True)
     date_proposed = fields.Date(required=True)
     date_completed = fields.Date(allow_none=True)

@@ -6,36 +6,45 @@ Service = DatabaseService()
 parser = reqparse.RequestParser()
 
 
-class WorkoutList(Resource):
+class ExerciseList(Resource):
 
     def get(self):
         """
-        Returns list of workouts.
+        Returns list of exercises.
         """
         parser = reqparse.RequestParser()
         parser.add_argument('limit', default=10, type=int)
         parser.add_argument('offset', default=0, type=int)
         params = parser.parse_args()
 
-        workouts, errors = Service.get_list(params['limit'], params['offset'])
+        exercises, errors = Service.get_exercises(
+            params['limit'], params['offset'])
 
         if errors:
             # TODO log errors.
             return None, 404
 
-        return workouts, 201
+        for e in exercises:
+            e_id = e['id']
+            del e['id']
+            e['_links'] = {
+                "self": {
+                    "href": request.url + str(e_id)
+                }
+            }
+
+        return exercises, 201
 
     def post(self):
         """
-        Creates a new workout.
+        Creates a new exercise.
         """
-        # force=True (the mimetype is ignored).
         data = request.get_json(force=True)
 
-        workout, errors = Service.create(data)
+        exercise, errors = Service.create_exercise(data)
 
         if errors:
             # TODO log errors.
             return None, 400
 
-        return workout, 201
+        return exercise, 201

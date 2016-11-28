@@ -1,5 +1,5 @@
 from . import db
-from .models import Workout
+from .models import Workout, Exercise
 from .schemas import WorkoutSchema
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
@@ -7,7 +7,26 @@ from sqlalchemy.exc import SQLAlchemyError
 
 WorkoutSerializer = WorkoutSchema()
 
+
 class DatabaseService(object):
+
+    def get_exercises(self, limit, offset):
+        """
+        Returns list of exercises.
+        """
+        exercises = Exercise.query.limit(limit).offset(offset).all()
+
+        return [{'name': e.name, 'id': e.id} for e in exercises], None
+
+    def create_exercise(self, data):
+        """
+        Creates exercise.
+        """
+        exercise = Exercise(data['name'])
+        db.session.add(exercise)
+        db.session.commit()
+
+        return None, 201
 
     def get_list(self, limit, offset):
         """
@@ -45,18 +64,15 @@ class DatabaseService(object):
         # TODO Sort out errors.
         # Validation process?
         workout, errors = WorkoutSerializer.load(data)
-
         if errors:
-            return False, errors
+            return None, errors
 
         db.session.add(workout)
         db.session.commit()
 
-        if workout.id is not None:
-            return True, None
+        new_workout, _ = self.get(workout.id)
 
-        return False, None
-
+        return new_workout, None
 
     def delete(self, id):
         """
@@ -78,12 +94,12 @@ class DatabaseService(object):
         Update workout with id <id> using data <data>.
         """
 
-        #TODO validate with serializer.
+        # TODO validate with serializer.
 
         workout = Workout.query.get(id)
 
         try:
-            data1 =  {k:v for k,v in data.items() if k != 'exercises'}
+            data1 = {k: v for k, v in data.items() if k != 'exercises'}
 
             for key, value in data1.iteritems():
                 setattr(workout, key, value)
@@ -97,14 +113,13 @@ class DatabaseService(object):
 
             db.session.commit()
 
-            # Assume get request just works.
             data, _ = self.get(id)
 
             return data, {}
 
         except ValidationError as err:
-                return None, {"error": err.messages}
+            return None, {"error": err.messages}
 
         except SQLAlchemyError as e:
-                db.session.rollback()
-                return None, {"error": str(e)}
+            db.session.rollback()
+            return None, {"error": str(e)}
