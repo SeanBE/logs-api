@@ -4,7 +4,7 @@ from flask import Flask
 from app.database import db
 from app.api import blueprint as api
 
-# This the correct way??
+#TODO This the correct way??
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
