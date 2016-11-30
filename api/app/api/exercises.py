@@ -5,7 +5,7 @@ from app.database.services import DatabaseService
 
 # TODO basic prototype. Move extension later.
 auth = HTTPBasicAuth()
-
+# https://flask-httpauth.readthedocs.io/en/latest/
 users = {'user': 'password'}
 
 @auth.get_password

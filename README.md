@@ -2,6 +2,11 @@
 [![Build Status](https://travis-ci.com/SeanBE/strength-api.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength-api)
 
 
+https://github.com/joshfriend/flask-restful-demo/blob/master/demo/api/__init__.py
+https://github.com/miguelgrinberg/flack/tree/master/flack
+https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful/page/0
+https://gist.github.com/miguelgrinberg/5614326
+
 ## TODO LIST
 Nginx - for HTTPS (SSL/TLS)
 
@@ -21,7 +26,7 @@ for other databases just drop and create?
 -Is service class the right way?
 
 
-
+-Move to pytest (https://jacobian.org/writing/getting-started-with-pytest/)
 
 coverage?
 config use dict e.g. {'dev': devConfig}
