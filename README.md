@@ -1,4 +1,4 @@
-# Strength API
+# Strength
 [![Build Status](https://travis-ci.com/SeanBE/strength-api.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength-api)
 
 
@@ -19,3 +19,14 @@ for other databases just drop and create?
 -Responses and response codes for each http request.
 
 -Is service class the right way?
+
+
+
+
+coverage?
+config use dict e.g. {'dev': devConfig}
+
+static methods in Models?
+import blueprint in create apps.
+
+FLack from Miguel. check it out.
