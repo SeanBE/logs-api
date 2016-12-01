@@ -19,3 +19,10 @@ class ProdConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres@postgres/postgres"
+
+
+config = {
+    'development': DevConfig,
+    'production': ProdConfig,
+    'testing': TestConfig
+}

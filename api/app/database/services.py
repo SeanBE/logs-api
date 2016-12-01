@@ -42,6 +42,18 @@ class DatabaseService(object):
 
         return data, None
 
+    def get_exercise(self, id):
+        """
+        Returns exercise with id <id>.
+        """
+
+        exercise = Exercise.query.filter_by(id=id).first()
+
+        if exercise:
+            return {'name': exercise.name, 'id': exercise.id}, None
+
+        return None, None
+
     def get(self, id):
         """
         Returns workout with id <id>.

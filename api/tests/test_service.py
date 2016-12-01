@@ -3,7 +3,7 @@ import unittest
 from random import randint
 from datetime import datetime
 
-from app import create_app, config
+from app import create_app
 from app.database import db
 from app.database.models import Exercise, ExerciseEntry, Workout
 from app.database.services import DatabaseService
@@ -15,7 +15,7 @@ DATES = ['2016-11-01', '2016-11-02', '2016-11-03']
 class ServiceTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app(config.TestConfig)
+        self.app = create_app('testing')
         db.app = self.app
         self.app = self.app.test_client()
 

@@ -19,7 +19,13 @@ services:
       - "5432:5432"
     volumes:
       - data-postgres:/var/lib/postgresql/data
-
+  frontend:
+    build: ./view
+    ports:
+      - "9999:80"
+    command: "/usr/sbin/apache2ctl -D FOREGROUND"
+    links:
+      - api
   nginx:
     restart: always
     build: ./nginx/

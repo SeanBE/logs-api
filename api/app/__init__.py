@@ -1,4 +1,5 @@
-from . import config
+import os
+from config import config
 from flask import Flask
 
 from app.database import db
@@ -11,12 +12,16 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
-def create_app(config=config.DevConfig):
+def create_app(config_name=None):
     """
     Creates a new Flask application and initializes application.
     """
     app = Flask(__name__)
-    app.config.from_object(config)
+
+    if config_name is None:
+        config_name = os.environ.get('ENV_CONFIG', 'development')
+
+    app.config.from_object(config[config_name])
 
     db.init_app(app)
 
