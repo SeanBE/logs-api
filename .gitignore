@@ -4,4 +4,5 @@
 venv
 env
 __pycache__
-blog_old.md
+view/node_modules
+view/dist
