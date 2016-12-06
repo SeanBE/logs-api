@@ -1,5 +1,7 @@
 from flask import request
 from flask_restful import Resource, reqparse
+
+from app.auth import auth
 from app.database.services import DatabaseService
 
 Service = DatabaseService()
@@ -7,6 +9,8 @@ parser = reqparse.RequestParser()
 
 
 class Workout(Resource):
+
+    decorators = [auth.login_required]
 
     def get(self, id):
         """
@@ -43,6 +47,8 @@ class Workout(Resource):
 
 
 class WorkoutList(Resource):
+
+    decorators = [auth.login_required]
 
     def get(self):
         """

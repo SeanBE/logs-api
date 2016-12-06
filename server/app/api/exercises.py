@@ -1,27 +1,16 @@
 from flask import request
 from flask_restful import Resource, reqparse
-from flask_httpauth import HTTPBasicAuth
+
+from app.auth import auth
 from app.database.services import DatabaseService
-
-# TODO basic prototype. Move extension later.
-# https://flask-httpauth.readthedocs.io/en/latest/
-
-auth = HTTPBasicAuth()
-users = {'user': 'password'}
-
-
-@auth.get_password
-def get_pw(username):
-    if username in users:
-        return users.get(username)
-    return None
-
 
 Service = DatabaseService()
 parser = reqparse.RequestParser()
 
 
 class Exercise(Resource):
+
+    decorators = [auth.login_required]
 
     def get(self, id):
         """

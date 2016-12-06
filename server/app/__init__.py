@@ -1,9 +1,7 @@
 import os
 from config import config
 from flask import Flask
-
 from app.database import db
-from app.api import blueprint as api
 
 #TODO This the correct way??
 def after_request(response):
@@ -25,6 +23,7 @@ def create_app(config_name=None):
 
     db.init_app(app)
 
+    from app.api import blueprint as api
     app.register_blueprint(api, url_prefix='/api/1')
     app.after_request_funcs = {None:[after_request]}
 
