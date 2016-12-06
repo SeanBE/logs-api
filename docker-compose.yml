@@ -3,7 +3,7 @@ version: '2'
 services:
   api:
     restart: always
-    build: ./api
+    build: ./backend
     command: python server.py
     ports:
       - "5000:5000"
@@ -19,8 +19,8 @@ services:
       - "5432:5432"
     volumes:
       - data-postgres:/var/lib/postgresql/data
-  frontend:
-    build: ./view
+  client:
+    build: ./client
     ports:
       - "9999:80"
     command: "/usr/sbin/apache2ctl -D FOREGROUND"

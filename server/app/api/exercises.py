@@ -9,6 +9,7 @@ from app.database.services import DatabaseService
 auth = HTTPBasicAuth()
 users = {'user': 'password'}
 
+
 @auth.get_password
 def get_pw(username):
     if username in users:
@@ -18,6 +19,21 @@ def get_pw(username):
 
 Service = DatabaseService()
 parser = reqparse.RequestParser()
+
+
+class Exercise(Resource):
+
+    def get(self, id):
+        """
+        Returns a exercise.
+        """
+        exercise, errors = DatabaseService().get_exercise(id)
+
+        if exercise:
+            return exercise, 200
+
+        return None, 401
+
 
 class ExerciseList(Resource):
 

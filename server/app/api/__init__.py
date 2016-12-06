@@ -1,9 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
-from .workouts import WorkoutList
-from .exercises import ExerciseList
-from .exercise import Exercise
-from .workout import Workout
+from .workouts import WorkoutList, Workout
+from .exercises import ExerciseList, Exercise
 
 blueprint = Blueprint('api', __name__)
 

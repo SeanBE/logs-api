@@ -4,5 +4,5 @@
 venv
 env
 __pycache__
-view/node_modules
-view/dist
+client/node_modules
+client/dist
