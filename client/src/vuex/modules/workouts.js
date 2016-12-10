@@ -21,7 +21,7 @@ const actions = {
                 commit(types.ADD_WORKOUT_SUCCESS, {
                     workout
                 })
-            }, 
+            },
             error => {
                 commit(types.ADD_WORKOUT_FAILURE)
             }
@@ -30,14 +30,13 @@ const actions = {
     getAllWorkouts({
         commit
     }) {
-        // TODO add additional error callback (additional parameter)
         // () => commit(types.CHECKOUT_FAILURE, { savedCartItems })
         api.getWorkouts(workouts => {
                 commit(types.GET_WORKOUT_LIST_SUCCESS, {
                     workouts
                 })
             },
-            error => {
+            () => {
                 commit(types.GET_WORKOUT_LIST_FAILURE)
             }
         )
@@ -46,7 +45,6 @@ const actions = {
 
 // mutations
 const mutations = {
-    // TODO do i need braces here?
     [types.ADD_WORKOUT_SUCCESS](state, {
         workout
     }) {

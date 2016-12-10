@@ -11,6 +11,10 @@ def get_pw(username):
         return users.get(username)
     return None
 
+# @auth.error_handler
+# def auth_error():
+#     return "&lt;h1&gt;Access Denied&lt;/h1&gt;"
+    
 # @basic_auth.verify_password
 # def verify_password(nickname, password):
 #     """Password verification callback."""

@@ -9,7 +9,12 @@ axios.defaults.baseURL = API_ROOT
 
 export default {
     getWorkouts(callback, errorCallback) {
-        axios.get('workouts/').then(response => {
+        axios.get('workouts/', {
+            auth: {
+                username: 'user',
+                password: 'password'
+            }
+        }).then(response => {
             callback(response.data)
         }).catch(error => {
             errorCallback(error)
