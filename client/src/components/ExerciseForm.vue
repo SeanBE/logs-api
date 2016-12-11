@@ -2,7 +2,6 @@
 <div class="panel panel-default">
     <div class="panel-heading" role="tab" :id="header">
         <div class="row">
-
             <label class="col-sm-2 control-label">Exercise:</label>
             <div class="col-sm-2">
                 <input type="text" v-model="exercise.name" class="form-control" placeholder="Exercise">

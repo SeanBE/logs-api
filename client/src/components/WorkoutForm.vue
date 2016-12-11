@@ -1,8 +1,5 @@
 <template>
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h2>Create Workout</h2></div>
-
     <div class="panel-body">
         <form class="form-horizontal">
             <div class="form-group">
@@ -26,7 +23,7 @@
                 <div class="col-sm-4 col-sm-offset-4">
                     <div class="btn-group" role="group" aria-label="Buttons">
                         <button type="button" v-on:click="addRow" class="btn btn-secondary">Add Exercise</button>
-                        <button type="submit" v-on:click="submitForm" class="btn btn-primary">Submit</button>
+                        <button type="submit" v-on:submit.prevent="onSubmit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -62,8 +59,7 @@ export default {
             })
         },
 
-        submitForm: function(event) {
-            event.preventDefault();
+        onSubmit: function(event) {
 
             // Validate form. Like set 2 cant be 0 and set3 can..
             // Add notification that it is submitted.

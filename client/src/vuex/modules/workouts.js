@@ -1,17 +1,14 @@
 import api from '../../api/'
 import * as types from '../types'
 
-// state
 const state = {
     workouts: []
 }
 
-//getters
 const getters = {
     workouts: state => state.workouts
 }
 
-// actions
 const actions = {
     addWorkout({
         commit
@@ -27,10 +24,17 @@ const actions = {
             }
         )
     },
+    deleteWorkout({
+        commit
+    }, id) {
+        api.deleteWorkout(id,
+            () => {
+                commit(types.REMOVE_WORKOUT_SUCCESS, id)
+            })
+    },
     getAllWorkouts({
         commit
     }) {
-        // () => commit(types.CHECKOUT_FAILURE, { savedCartItems })
         api.getWorkouts(workouts => {
                 commit(types.GET_WORKOUT_LIST_SUCCESS, {
                     workouts
@@ -43,7 +47,6 @@ const actions = {
     }
 }
 
-// mutations
 const mutations = {
     [types.ADD_WORKOUT_SUCCESS](state, {
         workout
@@ -51,6 +54,12 @@ const mutations = {
         state.workouts.push(workout)
     },
     [types.ADD_WORKOUT_FAILURE](state) {},
+    [types.REMOVE_WORKOUT_SUCCESS](state, id) {
+        for (var i = state.workouts.length - 1; i--;) {
+            if (state.workouts[i].uri === id) state.workouts.splice(i, 1)
+        }
+    },
+    // [types.REMOVE_WORKOUT_FAILURE](state) {},
     [types.GET_WORKOUT_LIST_SUCCESS](state, {
         workouts
     }) {

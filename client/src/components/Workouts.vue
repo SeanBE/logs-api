@@ -8,11 +8,9 @@
                     <button type="button" class="btn btn-info btn-sm" aria-label="Edit">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                     </button>
-                    <button type="button" class="pull-right btn btn-danger btn-sm" aria-label="Delete">
+                    <button type="button" @click.prevent="deleteExercise(workout.uri)" class="pull-right btn btn-danger btn-sm" aria-label="Delete">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </button>
-                    Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}}
-
+                    </button> Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}} {{workout.uri}}
                 </li>
             </ul>
         </div>
@@ -30,6 +28,12 @@ import {
 export default {
     components: {
         Workout
+    },
+    methods: {
+        deleteExercise: function(id) {
+          console.log('deleting ', id)
+          this.$store.dispatch('deleteWorkout', id)
+        }
     },
     computed: mapGetters({
         workouts: 'workouts'

@@ -26,5 +26,18 @@ export default {
         }).catch(error => {
             errorCallback(error)
         })
+    },
+    deleteWorkout(id, callback) {
+        axios.delete('workouts/' + id, {
+            auth: {
+                username: 'user',
+                password: 'password'
+            }
+        }).then(response => {
+            console.log(response)
+            callback(response)
+        }).catch(error => {
+            console.log(error)
+        })
     }
 }
