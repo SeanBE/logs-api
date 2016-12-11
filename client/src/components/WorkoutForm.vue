@@ -5,35 +5,47 @@
 
     <div class="panel-body">
         <form class="form-horizontal">
-            <div class="form-group row">
-                <label class="col-sm-2 control-label" for="formGroupInputLarge">Date Proposed:</label>
-                <div class="col-sm-3">
-                    <input class="form-control" v-model="date_proposed" type="date" id="formGroupInputLarge">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Date Proposed:</label>
+                <div class="col-sm-2">
+                    <input class="form-control" v-model="date_proposed" type="date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Date Completed:</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="date">
                 </div>
             </div>
 
-            <exerciseForm :exercise="ex" v-for="ex in exercises"></exerciseForm>
-            <div class="row">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <exerciseForm :exercise="ex" :index="index" v-for="(ex, index) in exercises"></exerciseForm>
+            </div>
+
+            <div class="form-group">
                 <div class="col-sm-4 col-sm-offset-4">
                     <div class="btn-group" role="group" aria-label="Buttons">
                         <button type="button" v-on:click="addRow" class="btn btn-secondary">Add Exercise</button>
                         <button type="submit" v-on:click="submitForm" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
+            </div>
         </form>
-        </div>
     </div>
+</div>
 </template>
 
 
 <script>
 import ExerciseForm from './ExerciseForm.vue'
+
 export default {
     data: function() {
         return {
             date_proposed: null,
             exercises: [{
                 name: "",
+                sets: 1,
                 reps: [0, 0, 0, 0, 0]
             }]
         }
@@ -45,6 +57,7 @@ export default {
         addRow: function() {
             this.exercises.push({
                 name: "",
+                sets: 1,
                 reps: [0, 0, 0, 0, 0]
             })
         },
@@ -69,7 +82,6 @@ export default {
                 }
                 return merged
             }, {})
-            console.log(data.exercises)
 
             this.$store.dispatch('addWorkout', data)
         }

@@ -1,37 +1,67 @@
-<template >
-<div id="exerciseForm">
-    <hr>
-    <div class="form-group">
+<template>
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" :id="header">
         <div class="row">
-            <label class="col-sm-2 control-label" for="0">Exercise:</label>
+
+            <label class="col-sm-2 control-label">Exercise:</label>
             <div class="col-sm-2">
-                <input type="text" v-model="exercise.name" class="form-control" id="0" placeholder="Exercise">
+                <input type="text" v-model="exercise.name" class="form-control" placeholder="Exercise">
             </div>
-            <label class="col-sm-2 control-label">Reps:</label>
-            <div class="col-sm-1">
-                <input type="number" v-model.number="exercise.reps[0]" class="form-control" placeholder="#1">
+            <label class="col-sm-2 control-label">Sets:</label>
+            <div class="col-sm-2">
+                <select v-model.number="exercise.sets" class="form-control">
+                  <option v-for="n in 5">
+                    {{ n }}
+                  </option>
+                </select>
             </div>
-            <div class="col-sm-1">
-                <input type="number" v-model.number="exercise.reps[1]" class="form-control" placeholder="#2">
-            </div>
-            <div class="col-sm-1">
-                <input type="number" v-model.number="exercise.reps[2]" class="form-control" placeholder="#3">
-            </div>
-            <div class="col-sm-1">
-                <input type="number" v-model.number="exercise.reps[3]" class="form-control" placeholder="#4">
-            </div>
-            <div class="col-sm-1">
-                <input type="number" v-model.number="exercise.reps[4]" class="form-control" placeholder="#5">
+
+            <a role="button" data-toggle="collapse" data-parent="#accordion" :href="collapseHash" aria-expanded="true" :aria-controls="collapse">
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+              <!--  TODO if loop for icon.-->
+            </button>
+            </a>
+        </div>
+
+    </div>
+    <div :id="collapse" class="panel-collapse collapse out" role="tabpanel" :aria-labelledby="header">
+        <div class="panel-body">
+            <div class="row" v-for="n in exercise.sets">
+
+                <label class="col-xs-2 control-label">Set #{{n}} Reps:</label>
+                <div class="col-xs-1">
+                    <input type="number" v-model.number="exercise.reps[n-1]" class="form-control">
+                </div>
+
+                <label class="col-xs-2 control-label">Weight:</label>
+                <div class="col-xs-1">
+                    <input type="number" class="form-control">
+                </div>
+
+                <label class="col-xs-2 control-label">Tempo:</label>
+                <div class="col-xs-1">
+                    <input type="number" class="form-control">
+                </div>
+
             </div>
         </div>
     </div>
+</div>
 </template>
+
 <script>
 export default {
-    props: ['exercise'],
-    methods: {
-        updateValue: function() {
-            this.$emit('changed-value')
+    props: ['exercise', 'index'],
+    computed: {
+        header: function() {
+            return `header${this.index}`
+        },
+        collapse: function() {
+            return `collapse${this.index}`
+        },
+        collapseHash: function() {
+            return `#collapse${this.index}`
         }
     }
 }
