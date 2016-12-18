@@ -1,4 +1,4 @@
-from models import Workout, ExerciseEntry
+from app.database.models import Workout, ExerciseEntry
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump, post_dump, pre_load, post_load
 

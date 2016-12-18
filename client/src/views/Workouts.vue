@@ -5,9 +5,12 @@
             <ul class="list-group">
                 <li v-for="workout in workouts" class="list-group-item">
 
-                    <button type="button" class="btn btn-info btn-sm" aria-label="Edit">
+                    <router-link :to="{ name: 'edit', params: {id: workout.uri} }">
+                        <button type="button" class="btn btn-info btn-sm" aria-label="Edit">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                    </button>
+                      </button>
+                    </router-link>
+                    </router-link>
                     <button type="button" @click.prevent="deleteExercise(workout.uri)" class="pull-right btn btn-danger btn-sm" aria-label="Delete">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     </button> Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}} {{workout.uri}}
@@ -20,7 +23,7 @@
 
 
 <script>
-import Workout from './Workout.vue'
+import Workout from '../components/Workout.vue'
 import {
     mapGetters
 } from 'vuex'
@@ -31,15 +34,13 @@ export default {
     },
     methods: {
         deleteExercise: function(id) {
-          console.log('deleting ', id)
-          this.$store.dispatch('deleteWorkout', id)
+            console.log('deleting ', id)
+            this.$store.dispatch('deleteWorkout', id)
         }
     },
-    computed: mapGetters({
-        workouts: 'workouts'
-    }),
+    computed: mapGetters(['workouts']),
     created() {
-        this.$store.dispatch('getAllWorkouts')
+        this.$store.dispatch('FETCH_WORKOUTS')
     }
 }
 </script>

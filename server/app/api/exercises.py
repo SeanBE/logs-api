@@ -2,11 +2,9 @@ from flask import request
 from flask_restful import Resource, reqparse
 
 from app.auth import auth
-from app.database.services import DatabaseService
+from app.database.models import Exercise as ExerciseModel
 
-Service = DatabaseService()
 parser = reqparse.RequestParser()
-
 
 class Exercise(Resource):
 
@@ -16,10 +14,10 @@ class Exercise(Resource):
         """
         Returns a exercise.
         """
-        exercise, errors = DatabaseService().get_exercise(id)
+        exercise = ExerciseModel.query.filter_by(id=id).first()
 
         if exercise:
-            return exercise, 200
+            return {'name': exercise.name, 'id': exercise.id}, 200
 
         return None, 401
 
@@ -37,13 +35,15 @@ class ExerciseList(Resource):
         parser.add_argument('offset', default=0, type=int)
         params = parser.parse_args()
 
-        exercises, errors = Service.get_exercises(
-            params['limit'], params['offset'])
+        exercises_result = (ExerciseModel
+                            .query
+                            .limit(params['limit'])
+                            .offset(params['offset'])
+                            .all())
 
-        if errors:
-            # TODO log errors.
-            return None, 404
+        exercises = [{'name': e.name, 'id': e.id} for e in exercises_result]
 
+        # TODO nasty.
         for e in exercises:
             e_id = e['id']
             del e['id']
@@ -61,10 +61,13 @@ class ExerciseList(Resource):
         """
         data = request.get_json(force=True)
 
-        exercise, errors = Service.create_exercise(data)
+        exercise = ExerciseModel(data['name'])
 
-        if errors:
-            # TODO log errors.
-            return None, 400
+        db.session.add(exercise)
+        db.session.commit()
+
+        # TODO try catch?
+        # if errors:
+        # return None, 400
 
         return exercise, 201

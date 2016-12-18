@@ -148,22 +148,11 @@
 
 
 <script>
-import Workout from './Workout.vue'
-import TotalVolume from './TotalVolume.vue'
-import {
-    mapGetters
-} from 'vuex'
+import TotalVolume from '../components/TotalVolume.vue'
 
 export default {
     components: {
-        Workout,
         TotalVolume,
     },
-    computed: mapGetters({
-        workouts: 'workouts'
-    }),
-    created() {
-        this.$store.dispatch('getAllWorkouts')
-    }
 }
 </script>

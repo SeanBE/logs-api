@@ -8,7 +8,7 @@ export const API_ROOT = (process.env.NODE_ENV === 'production') ?
 axios.defaults.baseURL = API_ROOT
 
 export default {
-    getWorkouts(callback, errorCallback) {
+    getWorkouts(callback, ) {
         axios.get('workouts/', {
             auth: {
                 username: 'user',
@@ -17,15 +17,30 @@ export default {
         }).then(response => {
             callback(response.data)
         }).catch(error => {
-            errorCallback(error)
+            console.log(error)
         })
     },
-    addWorkout(data, callback, errorCallback) {
+    addWorkout(data, callback) {
         axios.post('workouts/', data).then(response => {
             callback(response.data)
         }).catch(error => {
-            errorCallback(error)
+            console.log(error)
         })
+    },
+    // TODO what is nicer. two callbacks or one callback with two return values??
+    getWorkout(id, callback) {
+        axios.get('workouts/' + id, {
+            auth: {
+                username: 'user',
+                password: 'password'
+            }
+        }).then(response => {
+            console.log(response.data)
+            callback(response.data)
+        }).catch(error => {
+            console.log(error)
+        })
+
     },
     deleteWorkout(id, callback) {
         axios.delete('workouts/' + id, {

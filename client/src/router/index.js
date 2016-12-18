@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router';
 
-import DashboardView from './components/Dashboard.vue'
-import MainDashboardView from './components/MainDashboard.vue'
-import CreateView from './components/Create.vue'
-import WorkoutsView from './components/Workouts.vue'
+import EditView from '../views/EditView.vue'
+import DashboardView from '../views/Dashboard.vue'
+import MainDashboardView from '../views/MainDashboard.vue'
+import CreateView from '../views/Create.vue'
+import WorkoutsView from '../views/Workouts.vue'
 
 Vue.use(Router)
 
@@ -26,5 +27,9 @@ export default new Router({
         name: 'workouts',
         path: '/workouts',
         component: WorkoutsView
+    },{
+        name: 'edit',
+        path: '/edit/:id',
+        component: EditView
     }]
 })

@@ -1,8 +1,11 @@
+import Vue from 'vue'
 import api from '../../api/'
 import * as types from '../types'
 
+// TODO understand javscript promises.
+
 const state = {
-    workouts: []
+    workouts: { /* [id: number]: Workout */ }
 }
 
 const getters = {
@@ -10,64 +13,51 @@ const getters = {
 }
 
 const actions = {
-    addWorkout({
-        commit
-    }, workoutData) {
-        api.addWorkout(workoutData,
-            workout => {
-                commit(types.ADD_WORKOUT_SUCCESS, {
-                    workout
-                })
-            },
-            error => {
-                commit(types.ADD_WORKOUT_FAILURE)
-            }
+    FETCH_WORKOUTS: ({ commit, state }) => {
+        api.getWorkouts(
+            workouts => commit(types.SET_WORKOUTS, workouts)
         )
     },
-    deleteWorkout({
-        commit
-    }, id) {
-        api.deleteWorkout(id,
-            () => {
-                commit(types.REMOVE_WORKOUT_SUCCESS, id)
-            })
+    FETCH_WORKOUT: ({ commit, state }, { id }) => {
+        return state.workouts[id]
+        // if (state.workouts[id]) {
+        //     console.log(state.workouts[id].exercises)
+        //     return Promise.resolve(state.workouts[id])
+        // }
+        // console.log('NADADADAD!')
+        // return null
     },
-    getAllWorkouts({
-        commit
-    }) {
-        api.getWorkouts(workouts => {
-                commit(types.GET_WORKOUT_LIST_SUCCESS, {
-                    workouts
-                })
-            },
-            () => {
-                commit(types.GET_WORKOUT_LIST_FAILURE)
-            }
+
+    addWorkout({ commit }, workoutData) {
+        api.addWorkout(workoutData,
+            workout => commit(types.ADD_WORKOUT_SUCCESS, { workout })
+        )
+    },
+    deleteWorkout({ commit }, id) {
+        api.deleteWorkout(id,
+            () => commit(types.REMOVE_WORKOUT_SUCCESS, id)
         )
     }
 }
 
 const mutations = {
-    [types.ADD_WORKOUT_SUCCESS](state, {
-        workout
-    }) {
+    [types.SET_WORKOUTS](state, workouts) {
+        workouts.forEach(workout => {
+            if (workout) {
+                Vue.set(state.workouts, workout.uri, workout)
+            }
+        })
+    },
+
+    [types.ADD_WORKOUT_SUCCESS](state, { workout }) {
         state.workouts.push(workout)
     },
-    [types.ADD_WORKOUT_FAILURE](state) {},
+
     [types.REMOVE_WORKOUT_SUCCESS](state, id) {
         for (var i = state.workouts.length - 1; i--;) {
             if (state.workouts[i].uri === id) state.workouts.splice(i, 1)
         }
-    },
-    // [types.REMOVE_WORKOUT_FAILURE](state) {},
-    [types.GET_WORKOUT_LIST_SUCCESS](state, {
-        workouts
-    }) {
-        state.workouts = workouts
-    },
-    [types.GET_WORKOUT_LIST_FAILURE](state) {
-        state.workouts = []
-    },
+    }
 }
 
 export default {

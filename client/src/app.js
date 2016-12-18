@@ -3,9 +3,12 @@ import {
     sync
 } from 'vuex-router-sync';
 
-import router from './router'
+import router from './router/'
 import store from './vuex/store'
-import App from './components/App.vue'
+import App from './views/App.vue'
+import JQuery from 'jquery'
+import BootstrapJs from 'bootstrap/dist/js/bootstrap'
+import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 
 sync(store, router)
 

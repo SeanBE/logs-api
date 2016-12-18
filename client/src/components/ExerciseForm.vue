@@ -24,7 +24,7 @@
         </div>
 
     </div>
-    <div :id="collapse" class="panel-collapse collapse out" role="tabpanel" :aria-labelledby="header">
+    <div :id="collapse" class="panel-collapse collapse in" role="tabpanel" :aria-labelledby="header">
         <div class="panel-body">
             <div class="row" v-for="n in exercise.sets">
 

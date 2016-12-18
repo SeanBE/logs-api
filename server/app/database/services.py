@@ -4,29 +4,9 @@ from .schemas import WorkoutSchema
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
-
 WorkoutSerializer = WorkoutSchema()
 
-
 class DatabaseService(object):
-
-    def get_exercises(self, limit, offset):
-        """
-        Returns list of exercises.
-        """
-        exercises = Exercise.query.limit(limit).offset(offset).all()
-
-        return [{'name': e.name, 'id': e.id} for e in exercises], None
-
-    def create_exercise(self, data):
-        """
-        Creates exercise.
-        """
-        exercise = Exercise(data['name'])
-        db.session.add(exercise)
-        db.session.commit()
-
-        return None, 201
 
     def get_list(self, limit, offset):
         """
@@ -37,22 +17,10 @@ class DatabaseService(object):
         data, errors = WorkoutSerializer.dump(workouts, many=True)
 
         if errors:
-            print errors
+            #print errors
             return None, errors
 
         return data, None
-
-    def get_exercise(self, id):
-        """
-        Returns exercise with id <id>.
-        """
-
-        exercise = Exercise.query.filter_by(id=id).first()
-
-        if exercise:
-            return {'name': exercise.name, 'id': exercise.id}, None
-
-        return None, None
 
     def get(self, id):
         """
@@ -63,7 +31,7 @@ class DatabaseService(object):
         data, errors = WorkoutSerializer.dump(workout)
 
         if errors:
-            print errors
+            #print errors
             return None, errors
 
         return data, None

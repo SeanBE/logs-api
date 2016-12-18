@@ -15,7 +15,8 @@
                 </div>
             </div>
 
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <!-- id="accordion" -->
+            <div class="panel-group" role="tablist" aria-multiselectable="true">
                 <exerciseForm :exercise="ex" :index="index" v-for="(ex, index) in exercises"></exerciseForm>
             </div>
 

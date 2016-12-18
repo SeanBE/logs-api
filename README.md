@@ -4,6 +4,7 @@
 
 ## TODO LIST
 
+- FIX WORKOUTS URI!
 - Nginx - for HTTPS (SSL/TLS)
 - Move to pytest (<https://jacobian.org/writing/getting-started-with-pytest/>)
 - Add Coverage

@@ -12,7 +12,7 @@ let ages = [30, 22, 33, 45];
 
 let chart = d3.select('.chart')
 
-// 
+//
 // let bars = chart
 //     .selectAll('g')
 //     .data(ages)

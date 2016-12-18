@@ -10,7 +10,7 @@
 
 
 <script>
-import WorkoutForm from './WorkoutForm.vue'
+import WorkoutForm from '../components/WorkoutForm.vue'
 
 export default {
     components: {

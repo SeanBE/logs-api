@@ -16,7 +16,7 @@ class Workout(Resource):
         """
         Returns a workout.
         """
-        workout = DatabaseService().get(id)
+        workout,error = DatabaseService().get(id)
 
         if workout:
             return workout, 200

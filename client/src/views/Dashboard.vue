@@ -12,7 +12,7 @@
 
 
 <script>
-import Workout from './Workout.vue'
+import Workout from '../components/Workout.vue'
 import {
     mapGetters
 } from 'vuex'
@@ -25,7 +25,7 @@ export default {
         workouts: 'workouts'
     }),
     created() {
-        this.$store.dispatch('getAllWorkouts')
+        this.$store.dispatch('FETCH_WORKOUTS')
     }
 }
 </script>

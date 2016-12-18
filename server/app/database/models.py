@@ -1,6 +1,34 @@
 from . import db
 from datetime import datetime
 
+# class CRUDMixin(object):
+#
+#     def update(self, commit=True, **kwargs):
+#         """Update specific fields of a record."""
+#         # Prevent changing ID of object
+#         kwargs.pop('id', None)
+#         for attr, value in kwargs.iteritems():
+#             # Flask-RESTful makes everything None by default :/
+#             if value is not None:
+#                 setattr(self, attr, value)
+#         return commit and self.save() or self
+#
+#     def save(self, commit=True):
+#         """Save the record."""
+#         db.session.add(self)
+#         if commit:
+#             db.session.commit()
+#         return self
+#
+#     def delete(self, commit=True):
+#         """Remove the record from the database."""
+#         db.session.delete(self)
+#         return commit and db.session.commit()
+#
+#
+# class Model(CRUDMixin, db.Model):
+#     __abstract__ = True
+
 
 class Workout(db.Model):
     __tablename__ = 'workout'
