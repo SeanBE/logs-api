@@ -2,4 +2,4 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-from .models import Workout, Exercise,ExerciseEntry
+from app.database.models import Workout, Exercise, ExerciseEntry

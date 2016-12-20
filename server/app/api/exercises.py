@@ -1,25 +1,42 @@
 from flask import request
 from flask_restful import Resource, reqparse
-
 from app.auth import auth
-from app.database.models import Exercise as ExerciseModel
+from app.database.models import Exercise as Ex
 
-parser = reqparse.RequestParser()
 
+# TODO errors. Check right error codes.
 class Exercise(Resource):
 
     decorators = [auth.login_required]
 
     def get(self, id):
-        """
-        Returns a exercise.
-        """
-        exercise = ExerciseModel.query.filter_by(id=id).first()
+
+        exercise = Ex.query.filter_by(id=id).first()
 
         if exercise:
-            return {'name': exercise.name, 'id': exercise.id}, 200
+            return exercise.dump().data, 200
 
-        return None, 401
+        return {"error": "Exercise not found!"}, 404
+
+    def patch(self, id):
+        data = request.get_json(force=True)
+        exercise = Ex.query.filter_by(id=id).first()
+
+        exercise.update(**data)
+        return exercise.dump().data, 200
+
+    def delete(self, id):
+
+        deleted = (Ex
+                   .query
+                   .filter_by(id=id)
+                   .first()
+                   .delete())
+
+        if deleted:
+            return None, 204
+
+        return {"error": "Could not delete exercise!"}, 404
 
 
 class ExerciseList(Resource):
@@ -27,47 +44,26 @@ class ExerciseList(Resource):
     decorators = [auth.login_required]
 
     def get(self):
-        """
-        Returns list of exercises.
-        """
+
         parser = reqparse.RequestParser()
         parser.add_argument('limit', default=10, type=int)
         parser.add_argument('offset', default=0, type=int)
-        params = parser.parse_args()
+        p = parser.parse_args()
 
-        exercises_result = (ExerciseModel
+        exercises_result = (Ex
                             .query
-                            .limit(params['limit'])
-                            .offset(params['offset'])
+                            .limit(p['limit'])
+                            .offset(p['offset'])
                             .all())
 
-        exercises = [{'name': e.name, 'id': e.id} for e in exercises_result]
+        exercises, errors = Ex.dump_list(exercises_result)
 
-        # TODO nasty.
-        for e in exercises:
-            e_id = e['id']
-            del e['id']
-            e['_links'] = {
-                "self": {
-                    "href": request.url + str(e_id)
-                }
-            }
-
-        return exercises, 201
+        return exercises, 200
 
     def post(self):
-        """
-        Creates a new exercise.
-        """
+
         data = request.get_json(force=True)
+        exercise = Ex.load(data)
+        exercise.save()
 
-        exercise = ExerciseModel(data['name'])
-
-        db.session.add(exercise)
-        db.session.commit()
-
-        # TODO try catch?
-        # if errors:
-        # return None, 400
-
-        return exercise, 201
+        return exercise.dump().data, 201
