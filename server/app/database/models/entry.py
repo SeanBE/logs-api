@@ -2,7 +2,7 @@
 from app.database import db
 from collections import defaultdict
 from app.database.mixins import MarshmallowMixin, CRUDMixin
-from marshmallow import Schema, fields, pre_dump, post_dump, pre_load, post_load
+from marshmallow import Schema, fields, post_dump, post_load
 from app.database.models.exercise import Exercise
 
 

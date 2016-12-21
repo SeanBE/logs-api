@@ -73,8 +73,8 @@ class Workout(CRUDMixin, MarshmallowMixin, db.Model):
             return commit and self.save() or self
 
         except ValidationError as err:
-            return None, {"error": err.messages}
+            return {"error": err.messages}
 
         except SQLAlchemyError as e:
             db.session.rollback()
-            return None, {"error": str(e)}
+            return {"error": str(e)}

@@ -3,12 +3,6 @@ from app.config import config
 from flask import Flask
 from app.database import db
 
-#TODO This the correct way??
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
 
 def create_app(config_name=None):
     """
@@ -25,6 +19,13 @@ def create_app(config_name=None):
 
     from app.api import blueprint as api
     app.register_blueprint(api, url_prefix='/api/1')
-    app.after_request_funcs = {None:[after_request]}
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        return response
 
     return app

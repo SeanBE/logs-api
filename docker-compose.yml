@@ -3,7 +3,7 @@ version: '2'
 services:
   api:
     restart: always
-    build: ./backend
+    build: ./server
     command: python server.py
     ports:
       - "5000:5000"

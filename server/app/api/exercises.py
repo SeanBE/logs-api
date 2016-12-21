@@ -4,7 +4,6 @@ from app.auth import auth
 from app.database.models import Exercise as Ex
 
 
-# TODO errors. Check right error codes.
 class Exercise(Resource):
 
     decorators = [auth.login_required]
@@ -63,7 +62,6 @@ class ExerciseList(Resource):
     def post(self):
 
         data = request.get_json(force=True)
-        exercise = Ex.load(data)
-        exercise.save()
+        exercise = Ex.load(data).save()
 
         return exercise.dump().data, 201
