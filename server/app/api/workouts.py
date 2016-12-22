@@ -1,8 +1,11 @@
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+
+from webargs import fields, validate
+from webargs.flaskparser import use_kwargs
 
 from app.auth import auth
-from app.database.models import Workout as W
+from app.models import Workout as W
 
 
 class Workout(Resource):
@@ -14,62 +17,56 @@ class Workout(Resource):
         workout = W.query.filter_by(id=id).first()
 
         if workout:
-            data, errors = workout.dump()
-            return data, 201
+            return workout.dump().data, 200
 
-        return None, 401
+        return {"error": "Workout not found!"}, 404
 
     def patch(self, id):
-
         data = request.get_json(force=True)
         workout = W.query.filter_by(id=id).first()
-        result = workout.update(data)
-        # TODO what is result?
-        # if errors:
-        #     return errors, 404
 
-        return result, 200
+        workout.update(**data)
+        return workout.dump().data, 200
 
     def delete(self, id):
 
-        workout = W.query.filter_by(id=id).first()
-        deleted = workout.delete()
+        deleted = (W
+                   .query
+                   .filter_by(id=id)
+                   .first()
+                   .delete())
 
         if deleted:
             return None, 204
 
-        return None, 404
+        return {"error": "Could not delete workout!"}, 404
 
 
 class WorkoutList(Resource):
 
     decorators = [auth.login_required]
 
-    def get(self):
-        """
-        Returns list of workouts.
-        """
-        parser = reqparse.RequestParser()
-        parser.add_argument('limit', default=10, type=int)
-        parser.add_argument('offset', default=0, type=int)
-        p = parser.parse_args()
+    page_args = {
+        'limit': fields.Int(missing=5),
+        'offset': fields.Int(missing=0)
+    }
 
-        result = W.query.limit(p['limit']).offset(p['offset']).all()
-        workouts, errors = W.dump_list(result)
+    @use_kwargs(page_args)
+    def get(self, limit, offset):
 
-        if errors:
-            return None, 401
+        workout_list = (W
+                        .query
+                        .limit(limit)
+                        .offset(offset)
+                        .all())
 
-        return workouts, 201
+        workouts, errors = W.dump_list(workout_list)
+
+        return workouts, 200
 
     def post(self):
-        """
-        Creates a new workout.
-        """
-        # force=True (the mimetype is ignored).
+
         data = request.get_json(force=True)
+        workout = W.load(data).save()
 
-        workout = W.load(data)
-        workout.save()
-
-        return workout.dump(), 201
+        return workout.dump().data, 201

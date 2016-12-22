@@ -18,7 +18,8 @@ class TestConfig(BaseConfig):
 class ProdConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres@postgres/postgres"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres@postgres/strength"
+    SQLALCHEMY_DATABASE_URI = "postgresql://sean:tracker@localhost/strength"
 
 
 config = {

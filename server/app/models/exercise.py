@@ -1,6 +1,7 @@
-from app.database import db
 from marshmallow import Schema, fields, post_load
-from app.database.mixins import MarshmallowMixin, CRUDMixin
+
+from app.extensions import db
+from app.mixins import MarshmallowMixin, CRUDMixin
 
 
 class ExerciseSchema(Schema):

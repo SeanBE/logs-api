@@ -1,4 +1,4 @@
-from app.database import db
+from app.extensions import db
 
 
 class MarshmallowMixin:
@@ -29,7 +29,7 @@ class CRUDMixin:
             return commit and db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
-            return false
+            return False
 
     def update(self, commit=True, **kwargs):
         print(kwargs.keys())

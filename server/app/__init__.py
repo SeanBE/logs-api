@@ -1,7 +1,6 @@
 import os
-from app.config import config
 from flask import Flask
-from app.database import db
+from app.config import config
 
 
 def create_app(config_name=None):
@@ -15,6 +14,7 @@ def create_app(config_name=None):
 
     app.config.from_object(config[config_name])
 
+    from app.extensions import db
     db.init_app(app)
 
     from app.api import blueprint as api

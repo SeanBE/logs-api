@@ -1,9 +1,10 @@
-from app.database import db
-from datetime import datetime
-from app.database.mixins import MarshmallowMixin, CRUDMixin
-from marshmallow import Schema, fields, pre_load, post_load
-from app.database.models.entry import ExerciseEntrySchema
+from datetime import datetime, date
 from sqlalchemy.exc import SQLAlchemyError
+from marshmallow import Schema, fields, pre_load, post_load
+
+from app.extensions import db
+from app.mixins import MarshmallowMixin, CRUDMixin
+from app.models.entry import ExerciseEntrySchema
 
 
 class WorkoutSchema(Schema):
@@ -40,21 +41,21 @@ class Workout(CRUDMixin, MarshmallowMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    date_proposed = db.Column(db.Date, nullable=False)
+    date_proposed = db.Column(db.Date, default=date.today(), nullable=False)
     date_completed = db.Column(db.Date)
-    date_created = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow())
+    exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
+                                lazy='dynamic', order_by=('ExerciseEntry.exercise_id'))
 
-    exercises = db.relationship('ExerciseEntry', cascade="all,delete", backref=db.backref(
-        'workout'), lazy='joined', order_by=('ExerciseEntry.exercise_id'))
+    def __init__(self, date_proposed=None, exercises=None, date_completed=None):
 
-    def __init__(self, date_proposed, exercises=None, date_completed=None, date_created=None):
-
+        # TODO Can we get rid of this? No boundary on date proposed?
+        # TODO date_proposed and date_created defaults?
+        # TODO create date_completed setter method instead.
         self.exercises = exercises or []
         self.date_completed = date_completed
         self.date_proposed = date_proposed
-
-        if date_created is None:
-            self.date_created = datetime.utcnow()
 
     def update(self, commit=True, **kwargs):
         try:

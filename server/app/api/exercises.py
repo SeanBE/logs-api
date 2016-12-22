@@ -1,7 +1,11 @@
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+
+from webargs import fields, validate
+from webargs.flaskparser import use_kwargs
+
 from app.auth import auth
-from app.database.models import Exercise as Ex
+from app.models import Exercise as Ex
 
 
 class Exercise(Resource):
@@ -42,17 +46,18 @@ class ExerciseList(Resource):
 
     decorators = [auth.login_required]
 
-    def get(self):
+    page_args = {
+        'limit': fields.Int(missing=10),
+        'offset': fields.Int(missing=0)
+    }
 
-        parser = reqparse.RequestParser()
-        parser.add_argument('limit', default=10, type=int)
-        parser.add_argument('offset', default=0, type=int)
-        p = parser.parse_args()
+    @use_kwargs(page_args)
+    def get(self, limit, offset):
 
         exercises_result = (Ex
                             .query
-                            .limit(p['limit'])
-                            .offset(p['offset'])
+                            .limit(limit)
+                            .offset(offset)
                             .all())
 
         exercises, errors = Ex.dump_list(exercises_result)
