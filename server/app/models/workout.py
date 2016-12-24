@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from sqlalchemy.exc import SQLAlchemyError
-from marshmallow import Schema, fields, pre_load, post_load
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError
 
 from app.extensions import db
 from app.mixins import MarshmallowMixin, CRUDMixin
@@ -47,35 +47,3 @@ class Workout(CRUDMixin, MarshmallowMixin, db.Model):
         db.DateTime, nullable=False, default=datetime.utcnow())
     exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
                                 lazy='dynamic', order_by=('ExerciseEntry.exercise_id'))
-
-    def __init__(self, date_proposed=None, exercises=None, date_completed=None):
-
-        # TODO Can we get rid of this? No boundary on date proposed?
-        # TODO date_proposed and date_created defaults?
-        # TODO create date_completed setter method instead.
-        self.exercises = exercises or []
-        self.date_completed = date_completed
-        self.date_proposed = date_proposed
-
-    def update(self, commit=True, **kwargs):
-        try:
-            data = {k: v for k, v in kwargs.items() if k != 'exercises'}
-
-            for key, value in data.iteritems():
-                setattr(self, key, value)
-
-            data = WorkoutSerializer.fix_exercise_entries(kwargs)
-
-            for new_ex, exercise in zip(data['exercises'], self.exercises):
-                new_ex['exercise_name'] = new_ex.pop('exercise')
-                for key, value in new_ex.iteritems():
-                    setattr(exercise, key, value)
-
-            return commit and self.save() or self
-
-        except ValidationError as err:
-            return {"error": err.messages}
-
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            return {"error": str(e)}

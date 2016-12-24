@@ -32,7 +32,6 @@ class CRUDMixin:
             return False
 
     def update(self, commit=True, **kwargs):
-        print(kwargs.keys())
 
         for attr, value in kwargs.items():
             if value is not None:

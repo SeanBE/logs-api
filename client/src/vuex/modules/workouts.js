@@ -42,9 +42,10 @@ const actions = {
 
 const mutations = {
     [types.SET_WORKOUTS](state, workouts) {
+        console.log(workouts)
         workouts.forEach(workout => {
             if (workout) {
-                Vue.set(state.workouts, workout.uri, workout)
+                Vue.set(state.workouts, workout.id, workout)
             }
         })
     },
@@ -55,7 +56,7 @@ const mutations = {
 
     [types.REMOVE_WORKOUT_SUCCESS](state, id) {
         for (var i = state.workouts.length - 1; i--;) {
-            if (state.workouts[i].uri === id) state.workouts.splice(i, 1)
+            if (state.workouts[i].id === id) state.workouts.splice(i, 1)
         }
     }
 }

@@ -25,6 +25,24 @@ class Workout(Resource):
         data = request.get_json(force=True)
         workout = W.query.filter_by(id=id).first()
 
+        # Ignore ID and Date Created.
+        data.pop('id')
+        data.pop('date_created')
+
+        exercises = []
+        for key, values in data['exercises'].items():
+            for entry in values:
+                entry['exercise'] = key
+                exercises.append(entry)
+        data['exercises'] = exercises
+
+        for new_ex, exercise in zip(data['exercises'], workout.exercises):
+            new_ex['exercise_name'] = new_ex.pop('exercise')
+            for key, value in new_ex.items():
+                setattr(exercise, key, value)
+
+        data.pop('exercises')
+
         workout.update(**data)
         return workout.dump().data, 200
 

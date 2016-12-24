@@ -7,12 +7,14 @@ export const API_ROOT = (process.env.NODE_ENV === 'production') ?
 
 axios.defaults.baseURL = API_ROOT
 
+
+
 export default {
     getWorkouts(callback, ) {
         axios.get('workouts/', {
             auth: {
-                username: 'user',
-                password: 'password'
+                username: 'sean',
+                password: 'test'
             }
         }).then(response => {
             callback(response.data)
@@ -31,8 +33,8 @@ export default {
     getWorkout(id, callback) {
         axios.get('workouts/' + id, {
             auth: {
-                username: 'user',
-                password: 'password'
+              username: 'sean',
+              password: 'test'
             }
         }).then(response => {
             console.log(response.data)
@@ -45,8 +47,8 @@ export default {
     deleteWorkout(id, callback) {
         axios.delete('workouts/' + id, {
             auth: {
-                username: 'user',
-                password: 'password'
+              username: 'sean',
+              password: 'test'
             }
         }).then(response => {
             console.log(response)

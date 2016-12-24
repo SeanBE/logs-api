@@ -59,13 +59,13 @@ export default {
     props: ['workout', 'index'],
     computed: {
         header: function() {
-            return `header${this.index}`
+            return "header${this.index}"
         },
         collapse: function() {
-            return `collapse${this.index}`
+            return 'collapse${this.index}'
         },
         collapseHash: function() {
-            return `#collapse${this.index}`
+            return '#collapse${this.index}'
         }
     }
 }

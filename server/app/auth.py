@@ -1,9 +1,7 @@
 from flask import jsonify, make_response
 
 from app.models import User
-
-from flask_httpauth import HTTPBasicAuth
-auth = HTTPBasicAuth()
+from app.extensions import auth
 
 
 @auth.error_handler

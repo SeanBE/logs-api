@@ -2,7 +2,7 @@
 <div class="edit-view">
     <div class="row">
       <template v-if="workout">
-        <h1>Workout : {{ workout.uri }}</h1>
+        <h1>Workout : {{ workout.id }}</h1>
         <div class="col-md-12">
             <WorkoutForm></WorkoutForm>
         </div>

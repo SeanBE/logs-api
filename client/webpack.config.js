@@ -29,21 +29,21 @@ module.exports = {
                 loader: 'babel-loader',
                 exclude: /node_modules/
             },
-            {
-                test: /\.(png|jpg|gif|svg)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]?[hash]'
-                }
-            },
-            {
-                test: /\.css$/,
-                loader: 'style-loader!css-loader'
-            },
-            {
-                test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-                loader: 'file-loader',
-            }
+            // {
+            //     test: /\.(png|jpg|gif|svg)$/,
+            //     loader: 'file-loader',
+            //     options: {
+            //         name: '[name].[ext]?[hash]'
+            //     }
+            // },
+            // {
+            //     test: /\.css$/,
+            //     loader: 'style-loader!css-loader'
+            // },
+            // {
+            //     test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+            //     loader: 'file-loader',
+            // }
         ]
     },
     resolve: {
@@ -55,7 +55,11 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
-    devtool: '#eval-source-map'
+    // performance: {
+    //   hints: process.env.NODE_ENV === 'production' ? true : false
+    // },
+    devtool: '#eval-source-map',
+
 }
 
 if (process.env.NODE_ENV === 'production') {
