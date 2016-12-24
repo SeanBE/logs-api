@@ -14,6 +14,10 @@ def create_app(config_name=None):
 
     app.config.from_object(config[config_name])
 
+    import logging
+    logging.basicConfig(filename='debug.log', level=logging.DEBUG)
+    app.logger.info("API environment set to " + config_name)
+
     from app.extensions import db
     db.init_app(app)
 
@@ -25,7 +29,8 @@ def create_app(config_name=None):
         response.headers.add('Access-Control-Allow-Origin', '*')
         response.headers.add('Access-Control-Allow-Headers',
                              'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        response.headers.add(
+            'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
         return response
 
     return app

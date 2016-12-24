@@ -26,7 +26,7 @@ class ProdConfig(BaseConfig):
     DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'tracker')
     DB_NAME = os.environ.get('POSTGRES_DB', 'strength')
 
-    SQLALCHEMY_DATABASE_URI = ('postgresql://%s:%s@%s/%s'
+    SQLALCHEMY_DATABASE_URI = ('postgresql://{}:{}@{}/{}'
                                .format(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME))
 
 

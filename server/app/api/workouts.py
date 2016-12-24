@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
 
 from webargs import fields, validate
@@ -19,7 +19,7 @@ class Workout(Resource):
         if workout:
             return workout.dump().data, 200
 
-        return {"error": "Workout not found!"}, 404
+        return jsonify(error="Workout not found!"), 404
 
     def patch(self, id):
         data = request.get_json(force=True)
@@ -57,7 +57,7 @@ class Workout(Resource):
         if deleted:
             return None, 204
 
-        return {"error": "Could not delete workout!"}, 404
+        return jsonify(error="Could not delete workout!"), 404
 
 
 class WorkoutList(Resource):
