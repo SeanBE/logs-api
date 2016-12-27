@@ -42,7 +42,6 @@ const actions = {
 
 const mutations = {
   [types.SET_WORKOUTS] (state, workouts) {
-    console.log(workouts)
     workouts.forEach(workout => {
       if (workout) {
         Vue.set(state.workouts, workout.id, workout)

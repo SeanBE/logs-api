@@ -12,7 +12,7 @@ def timestamp():
 
 
 class User(db.Model, CRUDMixin):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
 

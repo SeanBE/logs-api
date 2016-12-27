@@ -1,9 +1,14 @@
-FROM ubuntu:14.04
+FROM nginx:alpine
 MAINTAINER Sean Löfgren "lofgren.sean@gmail.com"
 
-RUN apt-get update
-RUN apt-get -y install apache2
+RUN apk update
+RUN apk add nodejs
 
-ENV INSTALL_PATH /var/www/html/
-WORKDIR $INSTALL_PATH
-ADD . $INSTALL_PATH
+ADD . /tmp/
+WORKDIR /tmp
+
+RUN npm install
+RUN npm run build
+
+RUN mv config/nginx.conf /etc/nginx/conf.d/default.conf
+RUN mv dist/* /usr/share/nginx/html

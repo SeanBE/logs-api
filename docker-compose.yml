@@ -9,8 +9,9 @@ services:
       - "5000:5000"
     volumes:
       - .:/api
+    environment:
+      - ENV_CONFIG=production
     env_file:
-      - web.env
       - db.env
     links:
       - postgres
@@ -27,7 +28,7 @@ services:
     build: ./client
     ports:
       - "9999:80"
-    command: "/usr/sbin/apache2ctl -D FOREGROUND"
+    command: "nginx -g 'daemon off;'"
     links:
       - api
   nginx:
@@ -40,7 +41,7 @@ services:
     # volumes_from:
       # - api
     links:
-      - api:api
+      - api
 
 volumes:
   data-postgres:

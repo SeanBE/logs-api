@@ -12,6 +12,10 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [{
+    name: 'notfound',
+    path: '*',
+    component: MainDashboardView
+  }, {
     name: 'dashboard',
     path: '/',
     component: MainDashboardView
