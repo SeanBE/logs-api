@@ -14,6 +14,7 @@ def create_app(config_name=None):
 
     app.config.from_object(config[config_name])
 
+    # TODO logging sucks.
     import logging
     logging.basicConfig(filename='debug.log', level=logging.DEBUG)
     app.logger.info("API environment set to " + config_name)
@@ -28,7 +29,7 @@ def create_app(config_name=None):
     def after_request(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
         response.headers.add('Access-Control-Allow-Headers',
-                             'Content-Type,Authorization')
+                             'origin, x-requested-with, content-type, Authorization')
         response.headers.add(
             'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
         return response

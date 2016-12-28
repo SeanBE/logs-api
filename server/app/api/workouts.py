@@ -4,17 +4,17 @@ from flask_restful import Resource
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
-from app.auth import auth
+from app.auth import token_auth
 from app.models import Workout as W
 
 
 class Workout(Resource):
 
-    decorators = [auth.login_required]
+    decorators = [token_auth.login_required]
 
     def get(self, id):
 
-        workout = W.query.filter_by(id=id).first()
+        workout = W.query.get(id)
 
         if workout:
             return workout.dump().data, 200
@@ -23,7 +23,7 @@ class Workout(Resource):
 
     def patch(self, id):
         data = request.get_json(force=True)
-        workout = W.query.filter_by(id=id).first()
+        workout = W.query.get(id)
 
         # Ignore ID and Date Created.
         data.pop('id')
@@ -62,7 +62,7 @@ class Workout(Resource):
 
 class WorkoutList(Resource):
 
-    decorators = [auth.login_required]
+    decorators = [token_auth.login_required]
 
     page_args = {
         'limit': fields.Int(missing=5),

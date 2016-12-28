@@ -1,39 +1,35 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// import beforeEach from './beforeEach'
 
-import EditView from '../views/EditView.vue'
-import DashboardView from '../views/Dashboard.vue'
-import MainDashboardView from '../views/MainDashboard.vue'
-import CreateView from '../views/Create.vue'
-import WorkoutsView from '../views/Workouts.vue'
+import Login from '../views/Login.vue'
+import Dashboard from '../views/MainDashboard.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const routes = [{
+  name: 'catchall',
+  path: '*',
+  component: Login
+}, {
+  name: 'auth.login',
+  path: '/login',
+  component: Login
+}, {
+  name: 'dashboard',
+  path: '/',
+  component: Dashboard,
+  meta: {
+    requiresAuth: true
+  }
+}]
+
+const router = new Router({
   mode: 'history',
-  routes: [{
-    name: 'notfound',
-    path: '*',
-    component: MainDashboardView
-  }, {
-    name: 'dashboard',
-    path: '/',
-    component: MainDashboardView
-  }, {
-    name: 'dashboard_alt',
-    path: '/alt',
-    component: DashboardView
-  }, {
-    name: 'create',
-    path: '/create',
-    component: CreateView
-  }, {
-    name: 'workouts',
-    path: '/workouts',
-    component: WorkoutsView
-  }, {
-    name: 'edit',
-    path: '/edit/:id',
-    component: EditView
-  }]
+  linkActiveClass: 'active',
+  routes
 })
+
+// router.beforeEach(beforeEach)
+
+export default router

@@ -1,26 +1,31 @@
-import time
-from flask import abort
+import os
+import binascii
+from marshmallow import Schema, fields, post_load
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from .base import Base
 from app.extensions import db
-from app.mixins import CRUDMixin
 
 
-def timestamp():
-    """Return the current timestamp as an integer."""
-    return int(time.time())
+class UserSchema(Schema):
+
+    id = fields.Integer(required=True, dump_only=True)
+    username = fields.String(required=True)
+    password = fields.String(required=True, load_only=True)
+
+    @post_load
+    def make_user(self, data):
+        return User(**data)
 
 
-class User(db.Model, CRUDMixin):
+class User(Base):
     __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    created_at = db.Column(db.Integer, default=timestamp)
-    updated_at = db.Column(db.Integer, default=timestamp, onupdate=timestamp)
+    __schema__ = UserSchema
 
     username = db.Column(db.String(32), nullable=False, unique=True)
     password_hash = db.Column(db.String(256), nullable=False)
+
+    token = db.Column(db.String(64), nullable=True, unique=True)
 
     @property
     def password(self):
@@ -28,22 +33,13 @@ class User(db.Model, CRUDMixin):
 
     @password.setter
     def password(self, password):
+        self.token = None
         self.password_hash = generate_password_hash(password)
+
+    def generate_token(self):
+        """Creates a 64 character long randomly generated token."""
+        self.token = binascii.hexlify(os.urandom(32)).decode('utf-8')
+        return self.token
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    @staticmethod
-    def create(data):
-        """Create a new user."""
-        user = User()
-        user.from_dict(data, partial_update=False)
-        return user
-
-    def from_dict(self, data, partial_update=True):
-        for field in ['username', 'password']:
-            try:
-                setattr(self, field, data[field])
-            except KeyError:
-                if not partial_update:
-                    abort(400)

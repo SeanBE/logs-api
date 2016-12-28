@@ -3,7 +3,7 @@ import os
 
 class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    SECRET_KEY = 'gainz'
 
 class DevConfig(BaseConfig):
     DEBUG = True
@@ -27,7 +27,7 @@ class ProdConfig(BaseConfig):
     DB_NAME = os.environ.get('POSTGRES_DB', 'strength')
 
     SQLALCHEMY_DATABASE_URI = ('postgresql://{}:{}@{}/{}'
-                               .format(DB_USERNAME, '', DB_HOST, DB_NAME))
+                               .format(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME))
 
 
 config = {

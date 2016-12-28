@@ -1,3 +1,2 @@
-// import * as types from './types'
 
-// Contains actions for combined modules..
+// import * as types from './types'

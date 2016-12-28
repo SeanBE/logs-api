@@ -139,7 +139,6 @@ class WorkoutTestCase(unittest.TestCase):
         data['exercises']['Bench Press'][0]['reps'] = 9999
 
         data.pop('id')
-        data.pop('date_created')
 
         exercises = []
         for key, values in data['exercises'].items():
@@ -160,6 +159,7 @@ class WorkoutTestCase(unittest.TestCase):
         assert errors == {}
         assert new_workout['id'] == workout.id
         assert new_workout['date_completed'] == date_completed
+        # TODO test fails sometimes...
         assert new_workout['exercises']['Bench Press'][0]['reps'] == 9999
 
 

@@ -4,17 +4,17 @@ from flask_restful import Resource
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
-from app.auth import auth
+from app.auth import token_auth
 from app.models import Exercise as Ex
 
 
 class Exercise(Resource):
 
-    decorators = [auth.login_required]
+    decorators = [token_auth.login_required]
 
     def get(self, id):
 
-        exercise = Ex.query.filter_by(id=id).first()
+        exercise = Ex.query.get(id)
 
         if exercise:
             return exercise.dump().data, 200
@@ -23,7 +23,7 @@ class Exercise(Resource):
 
     def patch(self, id):
         data = request.get_json(force=True)
-        exercise = Ex.query.filter_by(id=id).first()
+        exercise = Ex.query.get(id)
 
         exercise.update(**data)
         return exercise.dump().data, 200
@@ -44,7 +44,7 @@ class Exercise(Resource):
 
 class ExerciseList(Resource):
 
-    decorators = [auth.login_required]
+    decorators = [token_auth.login_required]
 
     page_args = {
         'limit': fields.Int(missing=10),

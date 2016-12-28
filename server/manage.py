@@ -11,26 +11,23 @@ app = create_app()
 manager = Manager(app)
 
 
-class MyOwnMixer(Mixer):
-    # Custom Mixer for Flask init constructors.
-
-    def populate_target(self, values):
-        target = self.__scheme(**values)
-        return target
-
-
 @manager.command
 def setup_db():
     db.drop_all()
     db.create_all()
 
-    user = User.create({'username': 'sean', 'password': 'test'})
-    db.session.add(user)
-    db.session.commit()
+    User.load({'username': 'sean', 'password': 'test'}).save()
 
 
 @manager.command
 def fake_data():
+    class MyOwnMixer(Mixer):
+        # Custom Mixer for Flask init constructors.
+
+        def populate_target(self, values):
+            target = self.__scheme(**values)
+            return target
+
     mixer = MyOwnMixer()
     mixer.init_app(app)
     users = mixer.cycle(10).blend(User)

@@ -1,17 +1,15 @@
 from collections import defaultdict
 from marshmallow import Schema, fields, post_dump, post_load
 
+from .base import Base
 from app.extensions import db
 from app.models.exercise import Exercise
-from app.mixins import MarshmallowMixin, CRUDMixin
 
 
-class ExerciseEntry(CRUDMixin, MarshmallowMixin, db.Model):
+class ExerciseEntry(Base):
     __table__name = 'exercise_entry'
     __table_args__ = (db.UniqueConstraint('set_num', 'exercise_id', 'workout_id',
                                           name='_exercise_set_workout_uc'),)
-
-    id = db.Column(db.Integer, primary_key=True)
 
     set_num = db.Column(db.Integer, nullable=False)
 

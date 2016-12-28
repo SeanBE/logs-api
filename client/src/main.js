@@ -16,5 +16,6 @@ sync(store, router)
 new Vue({
   store,
   router,
+  el: '#app',
   render: h => h(App)
-}).$mount('#app')
+})

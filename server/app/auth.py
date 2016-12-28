@@ -1,16 +1,16 @@
-from flask import jsonify, make_response
+from flask import g, jsonify, make_response
 
 from app.models import User
-from app.extensions import auth
+from app.extensions import user_auth, token_auth
 
 
-@auth.error_handler
+@user_auth.error_handler
 def unauthorized():
-    # or 403..
-    return make_response(jsonify({'error': 'Unauthorized access'}), 401)
+    return (jsonify({'error': 'authentication required'}), 401,
+            {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})
 
 
-@auth.verify_password
+@user_auth.verify_password
 def verify_password(username, password):
     if not username or not password:
         return False
@@ -19,4 +19,29 @@ def verify_password(username, password):
     if user is None or not user.verify_password(password):
         return False
 
+    user.save()
+    g.current_user = user
     return True
+
+
+@token_auth.verify_token
+def verify_token(token, add_to_session=False):
+    if add_to_session:
+        if 'username' in session:
+            del session['username']
+
+    user = User.query.filter_by(token=token).first()
+    if user is None:
+        return False
+
+    user.save()
+    g.current_user = user
+    if add_to_session:
+        session['username'] = user.username
+    return True
+
+
+@token_auth.error_handler
+def token_error():
+    return (jsonify({'error': 'authentication required'}), 401,
+            {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})
