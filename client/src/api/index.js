@@ -1,58 +1,43 @@
-// import Vue from 'vue'
 import axios from 'axios'
 
-// TODO ???
 export const API_ROOT = (process.env.NODE_ENV === 'production')
   ? 'http://localhost:5000/api/1/'
   : 'http://localhost:5000/api/1/'
 
 axios.defaults.baseURL = API_ROOT
 
-export default {
-  getWorkouts (callback) {
-    axios.get('workouts/', {
-      auth: {
-        username: 'sean',
-        password: 'test'
-      }
-    }).then(response => {
+export const getWorkouts = (callback) => {
+  axios.get('workouts/').then(response => {
+    callback(response.data)
+  })
+}
+
+export const addWorkout = (data, callback) => {
+  axios.post('workouts/', data)
+    .then(response => {
       callback(response.data)
-    }).catch(error => {
-      console.log(error)
     })
-  },
-  addWorkout (data, callback) {
-    axios.post('workouts/', data).then(response => {
+}
+
+export const getWorkout = (id, callback) => {
+  axios.get('workouts/' + id)
+    .then(response => {
       callback(response.data)
-    }).catch(error => {
-      console.log(error)
     })
-  },
-  // TODO what is nicer. two callbacks or one callback with two return values??
-  getWorkout (id, callback) {
-    axios.get('workouts/' + id, {
-      auth: {
-        username: 'sean',
-        password: 'test'
-      }
-    }).then(response => {
-      console.log(response.data)
-      callback(response.data)
-    }).catch(error => {
-      console.log(error)
-    })
-  },
-  deleteWorkout (id, callback) {
-    axios.delete('workouts/' + id, {
-      auth: {
-        username: 'sean',
-        password: 'test'
-      }
-    }).then(response => {
-      console.log(response)
+}
+
+export const deleteWorkout = (id, callback) => {
+  axios.delete('workouts/' + id)
+    .then(response => {
       callback(response)
-    }).catch(error => {
-      console.log(error)
     })
-  }
+}
+
+export const newToken = ({ username, password }) => {
+  return axios.post('tokens/', {}, {
+    auth: {
+      username: username,
+      password: password
+    }
+  })
 }

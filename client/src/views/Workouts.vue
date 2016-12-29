@@ -5,15 +5,14 @@
       <ul class="list-group">
         <li v-for="workout in workouts" class="list-group-item">
 
-          <router-link :to="{ name: 'edit', params: {id: workout.id} }">
+          <!-- <router-link :to="{ name: 'edit', params: {id: workout.id} }">
             <button type="button" class="btn btn-info btn-sm" aria-label="Edit">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                       </button>
-          </router-link>
-          </router-link>
+          </router-link> -->
           <button type="button" @click.prevent="deleteExercise(workout.id)" class="pull-right btn btn-danger btn-sm" aria-label="Delete">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </button> Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}} id {{workout.id}}
+          </button> Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}} id {{workout.id}}
         </li>
       </ul>
     </div>

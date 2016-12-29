@@ -1,4 +1,4 @@
-FROM python:2.7-slim
+FROM python:3.5-slim
 MAINTAINER Sean Lofgren <lofgren.sean@gmail.com>
 
 RUN apt-get update && apt-get install -y \
@@ -13,6 +13,3 @@ WORKDIR $INSTALL_PATH
 ADD requirements.txt $INSTALL_PATH
 RUN pip install -r requirements.txt
 ADD . $INSTALL_PATH
-
-EXPOSE 5000
-CMD python server.py

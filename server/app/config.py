@@ -5,6 +5,7 @@ class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'gainz'
 
+
 class DevConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = False

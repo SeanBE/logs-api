@@ -1,8 +1,6 @@
 import Vue from 'vue'
-import api from '../../api/'
+import * as api from '../../api/'
 import * as types from '../types'
-
-// TODO understand javscript promises.
 
 const state = {
   workouts: { /* [id: number]: Workout */ }
@@ -15,28 +13,22 @@ const getters = {
 const actions = {
   FETCH_WORKOUTS: ({ commit, state }) => {
     api.getWorkouts(
-            workouts => commit(types.SET_WORKOUTS, workouts)
-        )
+      workouts => commit(types.SET_WORKOUTS, workouts)
+    )
   },
   FETCH_WORKOUT: ({ commit, state }, { id }) => {
     return state.workouts[id]
-        // if (state.workouts[id]) {
-        //     console.log(state.workouts[id].exercises)
-        //     return Promise.resolve(state.workouts[id])
-        // }
-        // console.log('NADADADAD!')
-        // return null
   },
 
   addWorkout ({ commit }, workoutData) {
     api.addWorkout(workoutData,
-            workout => commit(types.ADD_WORKOUT_SUCCESS, { workout })
-        )
+      workout => commit(types.ADD_WORKOUT_SUCCESS, { workout })
+    )
   },
   deleteWorkout ({ commit }, id) {
     api.deleteWorkout(id,
-            () => commit(types.REMOVE_WORKOUT_SUCCESS, id)
-        )
+      () => commit(types.REMOVE_WORKOUT_SUCCESS, id)
+    )
   }
 }
 

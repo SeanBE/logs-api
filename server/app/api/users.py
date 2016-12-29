@@ -12,10 +12,10 @@ class Users(Resource):
         data = request.get_json(force=True)
         user = Usr.load(data)
 
-        if Usr.query.filter_by(username = user.username).first() is not None:
+        if Usr.query.filter_by(username=user.username).first() is not None:
             abort(400)
 
-        user.save()
+        # user.save()
         return jsonify(user.dump().data), 201
 
 

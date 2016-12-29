@@ -13,6 +13,8 @@
           <input type="password" class="form-control" id="password" v-model="password">
         </div>
         <button class="btn btn-primary btn-block" type="submit">Login</button>
+        <el-button>Default Button</el-button>
+
       </form>
 
     </div>
@@ -26,7 +28,6 @@ import {
 } from 'vuex'
 
 export default {
-
   data () {
     return {
       username: 'example',
@@ -34,21 +35,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['attemptLogin']),
+    ...mapActions(['newToken']),
 
     submit () {
-      const { username, password } = this // http://wesbos.com/destructuring-objects/
+      const { username, password } = this
 
-      this.attemptLogin({ username, password })
+      this.newToken({ username, password })
         .then(() => {
+          console.log('hello??')
           this.$router.push({ name: 'dashboard' })
         })
-    },
-
-    // TODO reset is built in?
-    reset () {
-      this.username = ''
-      this.password = ''
     }
   }
 }

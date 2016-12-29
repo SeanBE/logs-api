@@ -68,7 +68,8 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
-    ]
+    ],
+    noParse: [new RegExp(path.resolve(__dirname, '/node_modules/localforage/dist/localforage.js'))]
   },
   eslint: {
     formatter: require('eslint-friendly-formatter')
