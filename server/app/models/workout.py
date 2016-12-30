@@ -13,6 +13,7 @@ class WorkoutSchema(Schema):
 
     date_proposed = fields.Date(required=True)
     date_completed = fields.Date(allow_none=True)
+    comment = fields.String(allow_none=True)
     exercises = fields.Nested(ExerciseEntrySchema, many=True, required=True)
 
     @pre_load
@@ -39,6 +40,7 @@ class Workout(Base):
 
     date_completed = db.Column(db.Date)
     date_proposed = db.Column(db.Date, default=date.today(), nullable=False)
+    comment = db.Column(db.Text)
 
     exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
                                 lazy='dynamic', order_by=('ExerciseEntry.exercise_id'))

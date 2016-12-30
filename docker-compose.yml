@@ -4,14 +4,13 @@ services:
   api:
     restart: always
     build: ./server
-    command: /usr/local/bin/gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
-    ports:
-      - "5000:5000"
+    command: /usr/local/bin/gunicorn --log-level INFO -w 4 -b 0.0.0.0:8000 wsgi:app
+    expose:
+      - "8000"
     volumes:
       - .:/api
-    environment:
-      - ENV_CONFIG=production
     env_file:
+      - web.env
       - db.env
     links:
       - postgres
@@ -33,13 +32,9 @@ services:
       - api
   nginx:
     restart: always
-    build: ./nginx/
+    build: ./nginx
     ports:
       - "80:80"
-    volumes:
-      - /www/static
-    # volumes_from:
-      # - api
     links:
       - api
 

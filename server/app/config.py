@@ -19,7 +19,6 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
-    DEBUG = True
     WTF_CSRF_ENABLED = True
 
     DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')

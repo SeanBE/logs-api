@@ -1,3 +1,4 @@
-FROM tutum/nginx
-RUN rm /etc/nginx/sites-enabled/default
-ADD sites-enabled/ /etc/nginx/sites-enabled
+FROM nginx:alpine
+MAINTAINER Sean Löfgren "lofgren.sean@gmail.com"
+
+ADD api.conf /etc/nginx/conf.d/default.conf

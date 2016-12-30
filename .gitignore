@@ -7,4 +7,4 @@ __pycache__
 client/node_modules
 client/dist
 .cache
-db.env
+*.env

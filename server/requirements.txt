@@ -1,7 +1,9 @@
 alembic==0.8.9
 aniso8601==1.2.0
+blinker==1.4
 CherryPy==8.1.2
 click==6.6
+contextlib2==0.5.4
 Faker==0.7.3
 Flask==0.11.1
 Flask-HTTPAuth==3.2.1
@@ -22,6 +24,7 @@ pytest==3.0.5
 python-dateutil==2.6.0
 python-editor==1.0.3
 pytz==2016.10
+raven==5.32.0
 six==1.10.0
 SQLAlchemy==1.1.4
 webargs==1.5.1
