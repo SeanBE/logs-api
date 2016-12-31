@@ -10,7 +10,7 @@ const beforeEach = (to, from, next) => {
     return
   }
 
-  store.dispatch('checkUserToken')
+  store.dispatch('CHECK_USER_TOKEN')
     .then(() => {
       next()
     })

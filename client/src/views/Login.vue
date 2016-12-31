@@ -35,14 +35,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['newToken']),
+    ...mapActions(['NEW_TOKEN']),
 
     submit () {
       const { username, password } = this
 
-      this.newToken({ username, password })
+      this.NEW_TOKEN({ username, password })
         .then(() => {
-          console.log('hello??')
           this.$router.push({ name: 'dashboard' })
         })
     }

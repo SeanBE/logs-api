@@ -18,7 +18,7 @@ const actions = {
     api.newToken(payload)
       .then(({ data }) => {
         // TODO data not token? why??
-        dispatch('setToken', data.token)
+        dispatch('SET_TOKEN', data.token)
         return
       })
   },
@@ -36,7 +36,7 @@ const actions = {
         if (isEmpty(token)) {
           return Promise.reject('NO_TOKEN')
         }
-        return dispatch('setToken', token) // keep promise chain
+        return dispatch('SET_TOKEN', token) // keep promise chain
       })
   }
 }
