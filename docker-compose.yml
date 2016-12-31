@@ -27,6 +27,8 @@ services:
     build: ./client
     ports:
       - "9999:80"
+    environment:
+      -API_ROOT=http://api/api/1/
     command: "nginx -g 'daemon off;'"
     links:
       - api

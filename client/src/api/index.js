@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-export const API_ROOT = (process.env.NODE_ENV === 'production')
-  ? 'http://localhost/api/1/'
-  : 'http://localhost/api/1/'
+// export const API_ROOT = (process.env.NODE_ENV === 'production')
+//   ? 'http://localhost/api/1/'
+//   : 'http://localhost/api/1/'
 
-axios.defaults.baseURL = API_ROOT
+axios.defaults.baseURL = process.env.API_ROOT
 
 export const getWorkouts = (callback) => {
   axios.get('workouts/').then(response => {
