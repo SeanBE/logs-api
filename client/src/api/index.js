@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export const API_ROOT = (process.env.NODE_ENV === 'production')
-  ? 'http://localhost:5000/api/1/'
-  : 'http://localhost:5000/api/1/'
+  ? 'http://localhost/api/1/'
+  : 'http://localhost/api/1/'
 
 axios.defaults.baseURL = API_ROOT
 
