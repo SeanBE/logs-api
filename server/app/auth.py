@@ -24,6 +24,7 @@ def verify_password(username, password):
 
     user.save()
     g.current_user = user
+    current_app.logger.debug('User {} verfied.'.format(username))
     return True
 
 
@@ -39,6 +40,7 @@ def verify_token(token, add_to_session=False):
 
     user.save()
     g.current_user = user
+    current_app.logger.debug('Token verfied for user {}.'.format(user.username))
     if add_to_session:
         session['username'] = user.username
     return True

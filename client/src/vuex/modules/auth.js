@@ -1,6 +1,5 @@
 import * as api from '../../api/'
 import * as types from '../types'
-import axios from 'axios'
 import localforage from 'localforage'
 import { userTokenStorageKey } from 'src/config'
 import { isEmpty } from 'lodash'
@@ -16,14 +15,13 @@ const getters = {
 const actions = {
   NEW_TOKEN: ({ dispatch }, payload) => {
     api.newToken(payload)
-      .then(({ data }) => {
-        // TODO data not token? why??
-        dispatch('SET_TOKEN', data.token)
-        return
+      .then(response => {
+        // TODO fix case of no response
+        dispatch('SET_TOKEN', response.data.token)
       })
   },
-  SET_TOKEN: ({ commit }, payload) => {
-    const token = (isEmpty(payload)) ? null : payload.token || payload
+  SET_TOKEN: ({ commit }, token) => {
+    // Takes in token as param.
     commit(types.SET_TOKEN, token)
     return Promise.resolve(token)
   },
@@ -47,19 +45,9 @@ const mutations = {
   }
 }
 
-const subscribe = (store) => {
-  store.subscribe((mutation, { token }) => {
-    if (types.SET_TOKEN === mutation.type) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`
-      localforage.setItem(userTokenStorageKey, token)
-    }
-  })
-}
-
 export default {
   state,
   getters,
   actions,
-  mutations,
-  plugins: [subscribe]
+  mutations
 }

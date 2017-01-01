@@ -17,7 +17,7 @@ def create_app(config_name=None):
     if not app.debug:
         import logging
         app.logger.addHandler(logging.StreamHandler())
-        app.logger.setLevel(logging.INFO)
+        app.logger.setLevel(logging.DEBUG)
 
     # Import and init extensions
     from app.extensions import db, sentry
@@ -26,7 +26,7 @@ def create_app(config_name=None):
 
     # Import and register blueprints
     from app.api import blueprint as api
-    app.register_blueprint(api, url_prefix='/api/1')
+    app.register_blueprint(api, url_prefix='/1')
 
     @app.after_request
     def after_request(response):

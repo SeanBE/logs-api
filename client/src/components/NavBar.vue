@@ -41,7 +41,7 @@ export default {
   },
   created: function () {
     // TODO nasty flicker of login.
-    this.$store.dispatch('CHECK_USER_TOKEN')
+    this.$store.dispatch('CHECK_USER_TOKEN').catch(error => console.log(error))
   },
   watch: {
     isLogged (value) {

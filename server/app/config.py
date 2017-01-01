@@ -5,13 +5,13 @@ class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'gainz'
 
-
+# Use local postgres?
 class DevConfig(BaseConfig):
     DEBUG = True
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
 
-
+# TODO move to /tmp/
 class TestConfig(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False

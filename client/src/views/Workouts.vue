@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     deleteExercise: function (id) {
-      console.log('deleting ', id)
       this.$store.dispatch('deleteWorkout', id)
     }
   },
