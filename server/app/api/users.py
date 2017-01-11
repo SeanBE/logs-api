@@ -1,4 +1,4 @@
-from flask import g, request, jsonify, abort
+from flask import g, request, jsonify, abort, make_response
 from flask_restful import Resource
 
 from app.auth import token_auth
@@ -10,13 +10,13 @@ class Users(Resource):
     def post(self):
 
         data = request.get_json(force=True)
-        user = Usr.load(data)
+        user, errors = Usr.load(data)
 
         if Usr.query.filter_by(username=user.username).first() is not None:
             abort(400)
 
         # user.save()
-        return jsonify(user.dump().data), 201
+        return make_response(jsonify(user.dump().data), 201)
 
 
 class User(Resource):

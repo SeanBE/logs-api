@@ -1,4 +1,4 @@
-from flask import g, jsonify
+from flask import g, jsonify, make_response
 from flask_restful import Resource
 
 from app.auth import user_auth, token_auth
@@ -11,7 +11,7 @@ class Token(Resource):
         if g.current_user.token is None:
             g.current_user.generate_token()
             g.current_user.save()
-        return jsonify({'token': g.current_user.token})
+        return make_response(jsonify({'token': g.current_user.token}), 200)
 
     @token_auth.login_required
     def delete(self):

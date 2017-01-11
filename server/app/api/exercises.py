@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from flask_restful import Resource
 
 from webargs import fields, validate
@@ -19,7 +19,7 @@ class Exercise(Resource):
         if exercise:
             return exercise.dump().data, 200
 
-        return jsonify(error="Exercise not found!"), 404
+        return make_response(jsonify(error="Exercise not found!"), 404)
 
     def patch(self, id):
         data = request.get_json(force=True)
@@ -39,7 +39,7 @@ class Exercise(Resource):
         if deleted:
             return None, 204
 
-        return jsonify(error="Could not delete exercise!"), 404
+        return make_response(jsonify(error="Could not delete exercise!"), 404)
 
 
 class ExerciseList(Resource):
@@ -56,8 +56,6 @@ class ExerciseList(Resource):
 
         exercises_result = (Ex
                             .query
-                            .limit(limit)
-                            .offset(offset)
                             .all())
 
         exercises, errors = Ex.dump_list(exercises_result)
@@ -67,6 +65,6 @@ class ExerciseList(Resource):
     def post(self):
 
         data = request.get_json(force=True)
-        exercise = Ex.load(data).save()
-
+        exercise, errors = Ex.load(data)
+        exercise.save()
         return exercise.dump().data, 201
