@@ -66,7 +66,8 @@ class ExerciseTestCase(unittest.TestCase):
     def test_create_exercise(self):
         name = 'Glute Bridge123'
 
-        exercise = Exercise.load({'name': name}).save()
+        exercise, errors = Exercise.load({'name': name})
+        exercise.save()
         data, errors = exercise.dump()
 
         assert errors == {}

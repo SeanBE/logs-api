@@ -1,12 +1,10 @@
 import os
+import logging
 from flask import Flask
 from app.config import config
 
 
 def create_app(config_name=None):
-    """
-    Creates a new Flask application and initializes application.
-    """
     app = Flask(__name__)
 
     if config_name is None:
@@ -15,14 +13,16 @@ def create_app(config_name=None):
     app.config.from_object(config[config_name])
 
     if not app.debug:
-        import logging
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.DEBUG)
 
     # Import and init extensions
     from app.extensions import db, sentry
+
     db.init_app(app)
-    sentry.init_app(app, logging=True, level=logging.INFO)
+
+    # TODO If production config.
+    # sentry.init_app(app, logging=True, level=logging.INFO)
 
     # Import and register blueprints
     from app.api import blueprint as api
@@ -34,7 +34,7 @@ def create_app(config_name=None):
         response.headers.add('Access-Control-Allow-Headers',
                              'content-type, Authorization')
         response.headers.add(
-            'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+            'Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE')
         return response
 
     return app
