@@ -10,6 +10,8 @@ from app import models
 app = create_app()
 manager = Manager(app)
 
+# TODO gunicorn command (with loglevel/reload params)
+#  /usr/local/bin/gunicorn -reload --log-level DEBUG -w 4 -b 0.0.0.0:8001 wsgi:app
 
 @manager.command
 def setup_db():
@@ -17,6 +19,23 @@ def setup_db():
     db.create_all()
 
     models.User.load({'username': 'admin', 'password': 'QDZFuq3g54ZRGwdt'}).save()
+
+# TODO test and lint.
+# @manager.command
+# def test():
+#     """Runs unit tests."""
+#     tests = subprocess.call(['python', '-c', 'import tests; tests.run()'])
+#     sys.exit(tests)
+#
+#
+# @manager.command
+# def lint():
+#     """Runs code linter."""
+#     lint = subprocess.call(['flake8', '--ignore=E402', 'flack/',
+#                             'manage.py', 'tests/']) == 0
+#     if lint:
+#         print('OK')
+#     sys.exit(lint)
 
 
 @manager.command
@@ -33,7 +52,7 @@ def fake_data():
     users = mixer.cycle(10).blend(models.User)
     exercises = mixer.cycle(15).blend(models.Exercise)
     entries = mixer.cycle(50).blend(models.ExerciseEntry)
-    workouts = mixer.cycle(20).blend(models.Workout)
+    workouts = mixer.cycle(5).blend(models.Workout)
 
 
 @manager.shell
