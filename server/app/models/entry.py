@@ -1,5 +1,6 @@
 from collections import defaultdict
-from marshmallow import Schema, fields, post_dump, post_load
+from marshmallow import Schema, fields, post_dump, post_load, pre_load
+from itertools import groupby
 
 from .base import Base
 from app.extensions import db
@@ -39,6 +40,8 @@ class ExerciseEntry(Base):
 
 class ExerciseEntrySchema(Schema):
 
+    id = fields.Integer(dump_only=True)
+
     exercise = fields.String(attribute='exercise.name')
     reps = fields.Integer(required=True)
     set_num = fields.Integer(required=True)
@@ -48,10 +51,11 @@ class ExerciseEntrySchema(Schema):
     @post_dump(pass_many=True)
     def fix_entries(self, data, many):
         if many:
-            exercises = defaultdict(list)
-            for entry in data:
-                exercises[entry['exercise']].append(
-                    {k: v for k, v in entry.items() if k != 'exercise'})
+            exercises = []
+            # TODO This efficient?
+            for exercise, rest in groupby(data, lambda e: e["exercise"]):
+                sets = [{k: v for k, v in d.items() if k not in ['exercise', 'set_num']} for d in rest]
+                exercises.append({"name": exercise, "sets": sets})
             return exercises
         return data
 

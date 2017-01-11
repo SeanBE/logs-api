@@ -8,7 +8,7 @@ class MarshmallowMixin:
 
     @classmethod
     def load(cls, obj):
-        return cls.__schema__().load(obj).data
+        return cls.__schema__().load(obj)
 
     @classmethod
     def dump_list(cls, object_list):
@@ -23,6 +23,7 @@ class CRUDMixin:
             db.session.commit()
         return self
 
+    # TODO test this?
     def delete(self, commit=True):
         try:
             db.session.delete(self)
