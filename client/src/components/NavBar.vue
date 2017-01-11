@@ -11,18 +11,18 @@
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-        <ul class="nav navbar-nav navbar-left">
+        <ul v-show="isLogged" class="nav navbar-nav navbar-right">
           <li>
-            <router-link v-show="!isLogged" :to="{ name: 'auth.login' }"><a class="navbar-link">Login</a></router-link>
-          </li>
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <router-link v-show="isLogged" :to="{ name: 'workouts' }"><a class="navbar-link">Workouts</a></router-link>
+            <router-link :to="{ name: 'workouts' }"><a class="navbar-link">Workouts</a></router-link>
           </li>
           <li>
-            <router-link v-show="isLogged" :to="{ name: 'workout.new' }"><a class="navbar-link">Create</a></router-link>
+            <router-link :to="{ name: 'exercise.list' }"><a class="navbar-link">Exercises</a></router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'workout.new' }"><a class="navbar-link"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'auth.logout' }"><a @click.prevent="logout" class="navbar-link"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></router-link>
           </li>
         </ul>
       </div>
@@ -33,15 +33,14 @@
 
 <script>
 import {
-  mapGetters
+  mapGetters, mapActions
 } from 'vuex'
 export default {
   computed: {
     ...mapGetters(['isLogged'])
   },
-  created: function () {
-    // TODO nasty flicker of login.
-    this.$store.dispatch('CHECK_USER_TOKEN').catch(error => console.log(error))
+  methods: {
+    ...mapActions({'logout': 'REMOVE_TOKEN'})
   },
   watch: {
     isLogged (value) {

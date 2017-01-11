@@ -3,10 +3,11 @@
 [![Build Status](https://travis-ci.com/SeanBE/strength.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength)
 
 ## CLIENT PRIORITY
-- Update
+-
 
 ## API PRIORITY
--
+- EXERCISE ORDER.
+
 ## API TODO
 - Check that nginx works as reverse proxy? look at gistfile.
 - Add coverage.
@@ -19,6 +20,9 @@
 - logging level
 - get rid of all special json formating (i.e. exercises in map)
 - pytest
+https://gist.github.com/alexmic/7857543
+http://vanzaj.github.io/tdd-pytest/tdd-basics/
+https://github.com/sloria/cookiecutter-flask
 
 ## CLIENT TODO
 - Create validation.

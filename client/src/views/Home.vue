@@ -6,6 +6,7 @@
         <div class="panel-heading">
           <h3 class="panel-title text-center">Advanced Fitness Threads</h3>
         </div>
+        <!-- https://www.reddit.com/r/AdvancedFitness/top.json?limit=5&sort=top&t=month -->
         <div class="panel-body">
           <ul class="list-group">
             <li class="list-group-item">
@@ -43,7 +44,6 @@
                           </label>
             </div>
           </form>
-          <totalVolume></totalVolume>
         </div>
       </div>
     </div>
@@ -118,7 +118,6 @@
           <h3 class="panel-title text-center">Next Workout</h3>
         </div>
         <div class="panel-body">
-          <totalVolume></totalVolume>
         </div>
       </div>
     </div>
@@ -128,7 +127,6 @@
           <h3 class="panel-title text-center">Top 3 Stats</h3>
         </div>
         <div class="panel-body">
-          <totalVolume></totalVolume>
         </div>
       </div>
     </div>
@@ -138,7 +136,6 @@
           <h3 class="panel-title text-center">Body Weight</h3>
         </div>
         <div class="panel-body">
-          <totalVolume></totalVolume>
         </div>
       </div>
     </div>
@@ -146,13 +143,14 @@
 </div>
 </template>
 
-
 <script>
-import TotalVolume from '../components/TotalVolume.vue'
-
 export default {
-  components: {
-    TotalVolume
+  created () {
+    // TODO this is run everytime we go to home page??
+    Promise.all([
+      this.$store.dispatch('FETCH_EXERCISES'),
+      this.$store.dispatch('FETCH_WORKOUTS')
+    ])
   }
 }
 </script>

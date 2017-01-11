@@ -12,18 +12,21 @@ const getters = {
   isLogged: ({ token }) => !isEmpty(token)
 }
 
+// dispatch for actions async commit sync .
 const actions = {
   NEW_TOKEN: ({ dispatch }, payload) => {
-    api.newToken(payload)
-      .then(response => {
-        // TODO fix case of no response
-        dispatch('SET_TOKEN', response.data.token)
+    return api.newToken(payload)
+      .then(({data}) => {
+        dispatch('SET_TOKEN', data.token)
       })
   },
   SET_TOKEN: ({ commit }, token) => {
-    // Takes in token as param.
     commit(types.SET_TOKEN, token)
     return Promise.resolve(token)
+  },
+  REMOVE_TOKEN: ({ commit }) => {
+    commit(types.REMOVE_TOKEN)
+    localforage.removeItem(userTokenStorageKey)
   },
   CHECK_USER_TOKEN: ({ dispatch, state }) => {
     if (!isEmpty(state.token)) {
@@ -32,9 +35,9 @@ const actions = {
     return localforage.getItem(userTokenStorageKey)
       .then((token) => {
         if (isEmpty(token)) {
-          return Promise.reject('NO_TOKEN')
+          return Promise.reject('No Token Found in Local Storage.')
         }
-        return dispatch('SET_TOKEN', token) // keep promise chain
+        return dispatch('SET_TOKEN', token)
       })
   }
 }
@@ -42,6 +45,9 @@ const actions = {
 const mutations = {
   [types.SET_TOKEN] (state, token) {
     state.token = token
+  },
+  [types.REMOVE_TOKEN] (state) {
+    state.token = null
   }
 }
 

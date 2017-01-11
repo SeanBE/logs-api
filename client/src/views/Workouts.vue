@@ -2,43 +2,41 @@
 <div>
   <div class="row">
     <div class="col-md-12">
-      <ul class="list-group">
-        <li v-for="workout in workouts" class="list-group-item">
-
-          <!-- <router-link :to="{ name: 'edit', params: {id: workout.id} }">
-            <button type="button" class="btn btn-info btn-sm" aria-label="Edit">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                      </button>
-          </router-link> -->
-          <button type="button" @click.prevent="deleteExercise(workout.id)" class="pull-right btn btn-danger btn-sm" aria-label="Delete">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-          </button> Workout with {{Object.keys(workout.exercises).length}} exercises proposed on {{workout.date_proposed}} completed on {{workout.date_completed}} id {{workout.id}}
-        </li>
-      </ul>
+      <!-- TODO order by date proposed ascending -->
+      <h2>Upcoming Workouts</h2>
+      <div v-if="upcoming.length > 0" class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <workout v-for="(workout,index) in upcoming" :workout="workout"></workout>
+      </div>
+        <div v-else class="alert alert-info">
+          <strong>Info!</strong> You've got no upcoming workouts bra!
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Past Workouts</h2>
+      <!-- TODO order by date completed descending -->
+      <div v-if="completed.length > 0" class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <workout v-for="(workout,index) in completed" :workout="workout"></workout>
+      </div>
+        <div v-else class="alert alert-info">
+          <strong>Info!</strong> You've got no completed workouts bra! Get to the gym!
+        </div>
     </div>
   </div>
 </div>
 </template>
 
-
 <script>
+import { mapGetters } from 'vuex'
 import Workout from '../components/Workout.vue'
-import {
-  mapGetters
-} from 'vuex'
 
 export default {
   components: {
     Workout
   },
-  methods: {
-    deleteExercise: function (id) {
-      this.$store.dispatch('deleteWorkout', id)
-    }
-  },
-  computed: mapGetters(['workouts']),
-  created () {
-    this.$store.dispatch('FETCH_WORKOUTS')
+  computed: {
+    ...mapGetters(['upcoming', 'completed'])
   }
 }
 </script>

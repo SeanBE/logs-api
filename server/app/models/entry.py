@@ -40,8 +40,6 @@ class ExerciseEntry(Base):
 
 class ExerciseEntrySchema(Schema):
 
-    id = fields.Integer(dump_only=True)
-
     exercise = fields.String(attribute='exercise.name')
     reps = fields.Integer(required=True)
     set_num = fields.Integer(required=True)
@@ -54,6 +52,7 @@ class ExerciseEntrySchema(Schema):
             exercises = []
             # TODO This efficient?
             for exercise, rest in groupby(data, lambda e: e["exercise"]):
+                rest = sorted(rest, key=lambda k: k['set_num'])
                 sets = [{k: v for k, v in d.items() if k not in ['exercise', 'set_num']} for d in rest]
                 exercises.append({"name": exercise, "sets": sets})
             return exercises

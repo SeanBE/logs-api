@@ -4,12 +4,10 @@ import { userTokenStorageKey } from 'src/config'
 import * as types from './types'
 
 export const subscribe = (store) => {
-  store.subscribe((mutation, data) => {
+  store.subscribe((mutation, {auth}) => {
     if (types.SET_TOKEN === mutation.type) {
-      // data must have auth + token.
-      // TODO try {Auth} ?
-      axios.defaults.headers.common.Authorization = `Bearer ${data.auth.token}`
-      localforage.setItem(userTokenStorageKey, data.auth.token)
+      axios.defaults.headers.common.Authorization = `Bearer ${auth.token}`
+      localforage.setItem(userTokenStorageKey, auth.token)
     }
   })
 }

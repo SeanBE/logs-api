@@ -1,67 +1,60 @@
 <template>
 <div class="panel panel-default">
-  <div class="panel-heading" role="tab" :id="header">
-    <div class="row">
-      <label class="col-sm-2 control-label">Exercise:</label>
-      <div class="col-sm-2">
-        <input type="text" v-model="exercise.name" class="form-control" placeholder="Exercise">
+  <div class="panel-heading">
+
+      <div class="form-group" >
+        <label class="control-label">Exercise:</label>
+          <select class="form-control" v-model="exercise.name">
+          <option v-for="option in exercises" v-bind:value="option.name">
+            {{ option.name }}
+          </option>
+        </select>
       </div>
-      <label class="col-sm-2 control-label">Sets:</label>
-      <div class="col-sm-2">
+
+      <div class="form-group">
+        <label class="control-label">Sets:</label>
         <select v-model.number="exercise.sets" class="form-control">
-                  <option v-for="n in 5">
-                    {{ n }}
-                  </option>
-                </select>
+          <option v-for="n in 5">{{ n }}</option>
+        </select>
       </div>
 
-      <a role="button" data-toggle="collapse" data-parent="#accordion" :href="collapseHash" aria-expanded="true" :aria-controls="collapse">
-        <button type="button" class="btn btn-default" aria-label="Left Align">
-              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-              <!--  TODO if loop for icon.-->
-            </button>
-      </a>
     </div>
 
-  </div>
-  <div :id="collapse" class="panel-collapse collapse in" role="tabpanel" :aria-labelledby="header">
-    <div class="panel-body">
-      <div class="row" v-for="n in exercise.sets">
+  <div class="panel-body">
+      <table class="table table-responsive">
+        <thead>
+          <th class="headers">Set</th>
+          <th class="headers">Reps</th>
+          <th class="headers">Weight</th>
+          <th class="headers">Comment</th>
+        </thead>
 
-        <label class="col-xs-2 control-label">Set #{{n}} Reps:</label>
-        <div class="col-xs-1">
-          <input type="number" v-model.number="exercise.reps[n-1]" class="form-control">
-        </div>
+        <tbody>
+          <tr v-for="n in exercise.sets">
+            <td> {{n}} </td>
+            <td><input type="number" v-model.number="exercise.reps[n-1]" class="form-control" /></td>
+            <td><input type="number" v-model.number="exercise.weight[n-1]" class="form-control" /></td>
+            <td><input type="text" v-model="exercise.comment[n-1]" class="form-control" /></td>
+          </tr>
+        </tbody>
+      </table>
 
-        <label class="col-xs-2 control-label">Weight:</label>
-        <div class="col-xs-1">
-          <input type="number" class="form-control">
-        </div>
-
-        <label class="col-xs-2 control-label">Tempo:</label>
-        <div class="col-xs-1">
-          <input type="number" class="form-control">
-        </div>
-
-      </div>
     </div>
-  </div>
 </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  props: ['exercise', 'index'],
+  props: ['exercise'],
   computed: {
-    header: function () {
-      return `header${this.index}`
-    },
-    collapse: function () {
-      return `collapse${this.index}`
-    },
-    collapseHash: function () {
-      return `#collapse${this.index}`
-    }
+    ...mapGetters(['exercises'])
   }
 }
 </script>
+
+<style>
+  .headers {
+    text-align: center;
+  }
+</style>

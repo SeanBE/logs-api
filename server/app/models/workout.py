@@ -43,4 +43,4 @@ class Workout(Base):
     comment = db.Column(db.Text)
 
     exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
-                                lazy='dynamic', order_by=('ExerciseEntry.exercise_id'))
+                                lazy='dynamic', order_by=('(ExerciseEntry.exercise_id, ExerciseEntry.set_num)'))

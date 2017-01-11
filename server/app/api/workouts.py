@@ -37,7 +37,6 @@ class Workout(Resource):
                 setattr(exercise, key, value)
 
         data.pop('exercises', None)
-
         workout.update(**data)
         return workout.dump().data, 200
 
@@ -83,6 +82,7 @@ class WorkoutList(Resource):
 
         data = request.get_json(force=True)
         workout, errors = W.load(data)
+        # TODO if errors do not save!!
         workout.save()
 
         return workout.dump().data, 201
