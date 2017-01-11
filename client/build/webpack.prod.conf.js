@@ -30,6 +30,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       'process.env': env
     }),
     new webpack.ProvidePlugin({
+      d3: 'd3',
       $: "jquery",
       jQuery: "jquery",
       jquery: "jquery"
