@@ -2,8 +2,9 @@ import os
 import pytest
 
 from app import create_app
-from app.extensions import db as _db
+from app.models.user import User
 from app.config import TestConfig
+from app.extensions import db as _db
 
 
 @pytest.yield_fixture(scope='session')
@@ -35,7 +36,7 @@ def client(app):
     yield app.test_client()
 
 
-@pytest.fixture(scope='session')
+@pytest.yield_fixture(scope='session')
 def db(app):
     """Session-wide test database."""
     if os.path.exists(TestConfig.DB_PATH):
@@ -50,3 +51,12 @@ def db(app):
 
     _db.drop_all()
     os.unlink(TestConfig.DB_PATH)
+
+
+@pytest.fixture(scope='session')
+def user(db):
+    # TODO do we need db as param to link dependency?
+    user, errors = User.load({'username': 'admin', 'password': 'password'})
+    assert not errors
+    user.save()
+    return user

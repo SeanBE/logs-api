@@ -4,11 +4,6 @@ from flask import jsonify, url_for
 from app.models.user import User
 
 
-@pytest.fixture()
-def user():
-    return persist_user('def', 'abc')
-
-
 def test_get_token(client):
     response = client.get(url_for('api.tokens'))
     assert response.status_code == 405
