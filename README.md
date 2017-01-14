@@ -2,33 +2,53 @@
 
 [![Build Status](https://travis-ci.com/SeanBE/strength.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength)
 
-## CLIENT PRIORITY
--
-
-## API PRIORITY
-- EXERCISE ORDER.
-
-## API TODO
-- Check that nginx works as reverse proxy? look at gistfile.
-- Add coverage.
-- Init constructors for flask models.
-- Fabric for deployment
-- Move all app containers to alpine.
-- clean up nginx docker setup.
-- clean logging code. separate module?
-- fix nginx for everything.
-- logging level
-- get rid of all special json formating (i.e. exercises in map)
-- pytest
-https://gist.github.com/alexmic/7857543
-http://vanzaj.github.io/tdd-pytest/tdd-basics/
-https://github.com/sloria/cookiecutter-flask
-
-## CLIENT TODO
-- Create validation.
+## Complete 1 a day.
+- API: Fixtures with pytest (hit the endpoints)
+  - http://vanzaj.github.io/tdd-pytest/tdd-basics/
+- API: Fix Exercise Order with additional field. Create User Workout relationship.
+- DOCKER: Use Fabric for deployment?
+- DOCKER: Move all to alpine.
+- ClIENT: Form validation.
+- API: Cache with REDIS.
+- DOCKER: Weekly data volume backups.
+- NGINX: Set up domain and SSL certificate from NameCheap.
+- NGINX: Does nginx work properly as a reverse proxy?
+- API: Logging format and add more logging.
+- API: Flask notifications for events. (https://github.com/inveniosoftware/flask-notifications)
+- CLIENT: Recently used exercises.
+- API: Identify missing issues (https://github.com/sloria/cookiecutter-flask)
 
 ## MAYBE
+- settings_override on create_app?
+- emails for user welcome
 - Google Calendar Integration
 - Body Weight
 - Calendar (https://github.com/jinzhe/vue-calendar)
 - Calendar (https://github.com/icai/vue2-calendar/blob/master/src/components/Calendar.vue)
+
+
+# @app.route('/someendpoint/' methods=['POST'])
+# def some_endpoint():
+#     """API endpoint for submitting data to
+#
+#     :return: status code 405 - invalid JSON or invalid request type
+#     :return: status code 400 - unsupported Content-Type or invalid publisher
+#     :return: status code 201 - successful submission
+#     """
+#     # Ensure post's Content-Type is supported
+#     if request.headers['content-type'] == 'application/json':
+#         # Ensure data is a valid JSON
+#         try:
+#             user_submission = json.loads(request.data)
+#         except ValueError:
+#             return Response(status=405)
+#         ... some magic stuff happens
+#         if everything_went_well:
+#             return Response(status=201)
+#         else:
+#             return Response(status=405)
+
+    #
+    # # User submitted an unsupported Content-Type
+    # else:
+    #     return Response(status=400)

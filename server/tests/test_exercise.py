@@ -6,7 +6,7 @@ from app.models import Exercise
 
 EXERCISES = ['Bench Press', 'Squat', 'Deadlift']
 
-
+# TODO revamp To test mixins purely.
 class ExerciseTestCase(unittest.TestCase):
     """
     Tests with CrudMixin and MarshMallow Mixin with Exercise object.
@@ -17,6 +17,7 @@ class ExerciseTestCase(unittest.TestCase):
         db.app = self.app
         self.app = self.app.test_client()
 
+        # session remove needed?
         db.session.remove()
         db.drop_all()
         db.create_all()

@@ -14,10 +14,10 @@ api = Api(blueprint)
 api.add_resource(WorkoutList, '/workouts/')
 api.add_resource(Workout, '/workouts/<id>')
 
-api.add_resource(ExerciseList, '/exercises/')
-api.add_resource(Exercise, '/exercises/<id>')
+api.add_resource(ExerciseList, '/exercises/', endpoint="exercises")
+api.add_resource(Exercise, '/exercises/<id>', endpoint="exercise")
 
-api.add_resource(Token, '/tokens/')
+api.add_resource(Token, '/tokens/', endpoint="tokens")
 
 api.add_resource(Users, '/users/')
 api.add_resource(User, '/users/<id>')

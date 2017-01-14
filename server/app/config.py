@@ -15,13 +15,13 @@ class DevConfig(BaseConfig):
 class TestConfig(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False
-    # TODO move to /tmp/
-    SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
+    SERVER_NAME = 'localhost'
+    DB_PATH = "/tmp/test.db"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + DB_PATH
 
 
 class ProdConfig(BaseConfig):
     WTF_CSRF_ENABLED = True
-
     DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
     DB_USER = os.environ.get('POSTGRES_USER', 'sean')
     DB_PW = os.environ.get('POSTGRES_PASSWORD', 'tracker')

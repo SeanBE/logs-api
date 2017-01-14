@@ -14,7 +14,7 @@ def unauthorized():
 @user_auth.verify_password
 def verify_password(username, password):
     if not username or not password:
-        current_app.logger.debug('Username or Password not provided')
+        current_app.logger.debug('Username ({}) or Password ({}) not provided'.format(username, password))
         return False
 
     user = User.query.filter_by(username=username).first()
@@ -36,6 +36,7 @@ def verify_token(token, add_to_session=False):
 
     user = User.query.filter_by(token=token).first()
     if user is None:
+        current_app.logger.debug('User not found!')
         return False
 
     user.save()
