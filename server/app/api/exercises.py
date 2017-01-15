@@ -74,7 +74,7 @@ class ExerciseList(Resource):
         return exercises, 200
 
     def post(self):
-
+        # TODO get rid of force and add silent.
         data = request.get_json(force=True)
         exercise, errors = Ex.load(data)
         exercise.save()

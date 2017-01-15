@@ -24,21 +24,16 @@ class Workout(Resource):
         return make_response(jsonify(error="Workout not found!"), 404)
 
     def patch(self, id):
-        data = request.get_json(force=True)
-        workout = W.query.get(id)
+        # content type needs to be application/json.
+        data = request.get_json(silent=True)
+        if data:
+            workout = W.query.get(id)
+            if workout:
+                workout.update(**data)
+                return workout.dump().data, 200
 
-        # TODO You can do better Sean!
-        data.pop('id', None)
-        data = WorkoutSchema().fix_exercise_entries(data)
-
-        for new_ex, exercise in zip(data['exercises'], workout.exercises):
-            new_ex['exercise_name'] = new_ex.pop('exercise')
-            for key, value in new_ex.items():
-                setattr(exercise, key, value)
-
-        data.pop('exercises', None)
-        workout.update(**data)
-        return workout.dump().data, 200
+            return make_response(jsonify(error="Workout not found!"), 404)
+        return make_response(jsonify(error="No data provided!"), 400)
 
     def delete(self, id):
 

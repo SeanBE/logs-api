@@ -26,6 +26,7 @@ const getters = {
 }
 
 const actions = {
+  // TODO catch errors for fetch_workouts fetch exercises!
   FETCH_WORKOUTS: ({ commit, state }) => {
     api.getWorkouts()
       .then(({data}) => commit(types.SET_WORKOUTS, data))

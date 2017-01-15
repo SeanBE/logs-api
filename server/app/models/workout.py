@@ -44,3 +44,14 @@ class Workout(Base):
 
     exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
                                 lazy='dynamic', order_by=('(ExerciseEntry.exercise_id, ExerciseEntry.set_num)'))
+
+    def update(self, commit=True, **kwargs):
+        kwargs.pop('id', None)
+        data = WorkoutSchema().fix_exercise_entries(kwargs)
+        for new_ex, exercise in zip(data['exercises'], self.exercises):
+            new_ex['exercise_name'] = new_ex.pop('exercise')
+            for key, value in new_ex.items():
+                setattr(exercise, key, value)
+
+        data.pop('exercises', None)
+        return super(Base, self).update(**data)

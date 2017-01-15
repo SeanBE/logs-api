@@ -5,19 +5,21 @@
 ## Complete 1 a day.
 - API: test_models and test_mixins
 - API: Fix Exercise Order with additional field. Create User Workout relationship.
-- DOCKER: Use Fabric for deployment?
-- DOCKER: Move all to alpine.
 - ClIENT: Form validation.
-- API: Cache with REDIS.
+- CLIENT: Redirect to workouts once one is created or updated.
 - DOCKER: Weekly data volume backups.
 - NGINX: Set up domain and SSL certificate from NameCheap.
 - NGINX: Does nginx work properly as a reverse proxy?
 - API: Logging format and add more logging.
-- API: Flask notifications for events. (https://github.com/inveniosoftware/flask-notifications)
 - CLIENT: Recently used exercises.
+
 - API: Identify missing issues (https://github.com/sloria/cookiecutter-flask)
 - DOCKER: Be able to deploy anywhere (whether its local or remote server..)
-
+- API: Flask notifications for events. (https://github.com/inveniosoftware/flask-notifications)
+- API: Implement swagger.
+- DOCKER: Use Fabric for deployment?
+- DOCKER: Move all to alpine.
+- API: Cache with REDIS.
 
 ## MAYBE
 - settings_override on create_app?
@@ -28,6 +30,8 @@
 - Calendar (https://github.com/icai/vue2-calendar/blob/master/src/components/Calendar.vue)
 
 
+https://github.com/nickjj/build-a-saas-app-with-flask
+http://vanzaj.github.io/tdd-pytest/tdd-basics/
 # @app.route('/someendpoint/' methods=['POST'])
 # def some_endpoint():
 #     """API endpoint for submitting data to
