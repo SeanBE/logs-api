@@ -43,7 +43,6 @@ def db(app):
             os.unlink(TestConfig.DB_PATH)
 
     _db.app = app
-    # TODO needed?
     _db.session.remove()
     _db.create_all()
 
