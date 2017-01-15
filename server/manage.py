@@ -18,7 +18,8 @@ def setup_db():
     db.drop_all()
     db.create_all()
 
-    models.User.load({'username': 'admin', 'password': 'QDZFuq3g54ZRGwdt'}).save()
+    user_data = {'username': 'admin', 'password': 'QDZFuq3g54ZRGwdt'}
+    models.User.load(userdata).data.save()
 
 # TODO test and lint.
 # @manager.command
