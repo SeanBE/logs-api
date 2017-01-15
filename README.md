@@ -3,8 +3,7 @@
 [![Build Status](https://travis-ci.com/SeanBE/strength.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength)
 
 ## Complete 1 a day.
-- API: Fixtures with pytest (hit the endpoints)
-  - http://vanzaj.github.io/tdd-pytest/tdd-basics/
+- API: test_models and test_mixins
 - API: Fix Exercise Order with additional field. Create User Workout relationship.
 - DOCKER: Use Fabric for deployment?
 - DOCKER: Move all to alpine.
@@ -17,6 +16,8 @@
 - API: Flask notifications for events. (https://github.com/inveniosoftware/flask-notifications)
 - CLIENT: Recently used exercises.
 - API: Identify missing issues (https://github.com/sloria/cookiecutter-flask)
+- DOCKER: Be able to deploy anywhere (whether its local or remote server..)
+
 
 ## MAYBE
 - settings_override on create_app?
