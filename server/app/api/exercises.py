@@ -1,4 +1,4 @@
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, current_app
 from flask_restful import Resource
 
 from webargs import fields, validate
@@ -22,23 +22,34 @@ class Exercise(Resource):
         return make_response(jsonify(error="Exercise not found!"), 404)
 
     def patch(self, id):
-        data = request.get_json(force=True)
-        exercise = Ex.query.get(id)
+        # content type needs to be application/json.
+        data = request.get_json(silent=True)
+        if data:
+            exercise = Ex.query.get(id)
+            if exercise:
+                exercise.update(**data)
+                return exercise.dump().data, 200
+            return make_response(jsonify(error="Exercise not found!"), 404)
 
-        exercise.update(**data)
-        return exercise.dump().data, 200
+        return make_response(jsonify(error="No data provided!"), 400)
+
 
     def delete(self, id):
 
-        deleted = (Ex
-                   .query
-                   .filter_by(id=id)
-                   .first()
-                   .delete())
+        exercise = (Ex
+                    .query
+                    .get(id))
 
-        if deleted:
+        if exercise:
+            error = exercise.delete()
+            if error:
+                current_app.logger.debug('Error deleting {}'.format(exercise.id))
+                # TODO what do we do?
+                return make_response(jsonify(error="Could not delete exercise!"), 404)
+
             return None, 204
 
+        current_app.logger.debug('Could not find exercise (id {})'.format(id))
         return make_response(jsonify(error="Could not delete exercise!"), 404)
 
 

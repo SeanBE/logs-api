@@ -52,7 +52,7 @@ class Workout(Resource):
             current_app.logger.debug('Deleted workout {}'.format(workout.id))
             return None, 204
 
-        current_app.logger.debug('Could not find workout {}'.format(workout.id))
+        current_app.logger.debug('Could not find workout (id {})'.format(id))
         return make_response(jsonify(error="Could not delete workout!"), 404)
 
 

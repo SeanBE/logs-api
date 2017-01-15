@@ -23,14 +23,14 @@ class CRUDMixin:
             db.session.commit()
         return self
 
-    # TODO test this?
     def delete(self, commit=True):
         try:
             db.session.delete(self)
-            return commit and db.session.commit()
-        except SQLAlchemyError as e:
+            db.session.commit()
+            return None
+        except SQLAlchemyError as error:
             db.session.rollback()
-            return False
+            return error
 
     def update(self, commit=True, **kwargs):
 
