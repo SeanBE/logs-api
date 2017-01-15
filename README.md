@@ -13,6 +13,10 @@
 - API: Logging format and add more logging.
 - CLIENT: Recently used exercises.
 
+docker run --rm --volumes-from data-postgres -v $(pwd):/backup ubuntu tar cvf /backup/data.tar /var/lib/postgresql/data
+
+- DOCKER figure out other volume without name.
+
 - API: Identify missing issues (https://github.com/sloria/cookiecutter-flask)
 - DOCKER: Be able to deploy anywhere (whether its local or remote server..)
 - API: Flask notifications for events. (https://github.com/inveniosoftware/flask-notifications)
