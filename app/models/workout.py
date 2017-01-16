@@ -1,10 +1,9 @@
-from datetime import datetime, date
-from sqlalchemy.exc import SQLAlchemyError
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError
+from datetime import date
+from marshmallow import Schema, fields, post_load
 
 from .base import Base
 from app.extensions import db
-from app.models.entry import ExerciseEntrySchema
+from app.models.exercise_entry import ExerciseEntrySchema
 
 
 class WorkoutSchema(Schema):
@@ -16,20 +15,6 @@ class WorkoutSchema(Schema):
     comment = fields.String(allow_none=True)
     exercises = fields.Nested(ExerciseEntrySchema, many=True, required=True)
 
-    @pre_load
-    def fix_exercise_entries(self, data):
-
-        exercises = []
-        for ex_index, exercise in enumerate(data['exercises']):
-            for set_index, s in enumerate(exercise['sets']):
-                s['ex_num'] = ex_index
-                s['set_num'] = set_index
-                s['exercise'] = exercise['name']
-            exercises.extend(exercise['sets'])
-
-        data['exercises'] = exercises
-        return data
-
     @post_load
     def make_workout(self, data):
         return Workout(**data)
@@ -39,13 +24,16 @@ class Workout(Base):
     __tablename__ = 'workout'
     __schema__ = WorkoutSchema
 
+    comment = db.Column(db.Text)
     date_completed = db.Column(db.Date)
     date_proposed = db.Column(db.Date, default=date.today(), nullable=False)
-    comment = db.Column(db.Text)
 
-    exercises = db.relationship('ExerciseEntry', backref="workout", cascade="all, delete-orphan",
-                                lazy='dynamic', order_by=('(ExerciseEntry.exercise_id, ExerciseEntry.set_num)'))
+    exercises = db.relationship('ExerciseEntry',
+                                backref="workout",
+                                cascade="all, delete-orphan",
+                                order_by=('(ExerciseEntry.ex_num)'))
 
+    # TODO test this!
     def update(self, commit=True, **kwargs):
         kwargs.pop('id', None)
         data = WorkoutSchema().fix_exercise_entries(kwargs)
