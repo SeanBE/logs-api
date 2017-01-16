@@ -4,9 +4,9 @@
 
 ## Complete 1 a day.
 - API: Fix Exercise Order with additional field.  Test needed!
-
 - API: use factor boy.
-- API: test_models and test_mixins
+- API: Coverage
+- API: test_models
 - Create User Workout relationship.
 - ClIENT: Form validation.
 - CLIENT: Redirect to workouts once one is created or updated.
