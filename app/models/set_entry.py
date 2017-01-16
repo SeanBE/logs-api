@@ -12,7 +12,6 @@ class SetEntry(Base):
     entry_id = db.Column(db.Integer,
                          db.ForeignKey('exercise_entry.id'), nullable=False)
 
-    #TODO defaults?
     set_num = db.Column(db.Integer, nullable=False)
     reps = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)

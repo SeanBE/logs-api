@@ -33,14 +33,16 @@ class Workout(Base):
                                 cascade="all, delete-orphan",
                                 order_by=('(ExerciseEntry.ex_num)'))
 
-    # TODO test this!
     def update(self, commit=True, **kwargs):
         kwargs.pop('id', None)
-        data = WorkoutSchema().fix_exercise_entries(kwargs)
-        for new_ex, exercise in zip(data['exercises'], self.exercises):
-            new_ex['exercise_name'] = new_ex.pop('exercise')
-            for key, value in new_ex.items():
-                setattr(exercise, key, value)
 
-        data.pop('exercises', None)
-        return super(Base, self).update(**data)
+        for entry, db_entry in zip(kwargs['exercises'], self.exercises):
+            for key, value in entry['exercise'].items():
+                setattr(db_entry.exercise, key, value)
+
+            for new_set, db_set in zip(entry['sets'], db_entry.sets):
+                for key, value in new_set.items():
+                    setattr(db_set, key, value)
+
+        kwargs.pop('exercises', None)
+        return super(Base, self).update(**kwargs)

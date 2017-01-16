@@ -23,9 +23,8 @@ class User(Base):
     __schema__ = UserSchema
 
     username = db.Column(db.String(32), nullable=False, unique=True)
-    password_hash = db.Column(db.String(256), nullable=False)
-
     token = db.Column(db.String(64), nullable=True, unique=True)
+    password_hash = db.Column(db.String(256), nullable=False)
 
     @property
     def password(self):

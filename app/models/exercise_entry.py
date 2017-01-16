@@ -2,6 +2,7 @@ from marshmallow import Schema, fields, post_load
 
 from .base import Base
 from app.extensions import db
+from app.models.exercise import ExerciseSchema
 from app.models.set_entry import SetEntrySchema
 
 
@@ -25,7 +26,7 @@ class ExerciseEntry(Base):
 
 class ExerciseEntrySchema(Schema):
 
-    name = fields.String(attribute='exercise.name')
+    exercise = fields.Nested(ExerciseSchema, only=['name'])
     sets = fields.Nested(SetEntrySchema, many=True, required=True)
 
     @post_load
