@@ -1,11 +1,13 @@
-import os
 import pytest
-from mixer.backend.flask import Mixer
+import sqlite3
+from sqlalchemy import event
+from flask_sqlalchemy import SignallingSession
 
-import app.models as m
 from app import create_app
-from app.config import TestConfig
 from app.extensions import db as _db
+import app.models as models
+
+FUNC_MAP = {}
 
 
 @pytest.yield_fixture(scope='session')
@@ -26,7 +28,28 @@ def app():
     ctx.pop()
 
 
-@pytest.yield_fixture(scope='function')
+@pytest.yield_fixture(scope='session')
+def db(app):
+    """Session-wide test database."""
+
+    _db.app = app
+    _db.session.remove()
+    _db.create_all()
+
+    yield _db
+
+    _db.drop_all()
+
+
+@pytest.fixture
+def user():
+    user_data = {'username': 'admin', 'password': 'password'}
+    user, errors = models.User.load(user_data)
+    user.save()
+    return user
+
+
+@pytest.yield_fixture
 def client(app):
     """
     Setup an app client, this gets executed for each test function.
@@ -37,43 +60,110 @@ def client(app):
     yield app.test_client()
 
 
-@pytest.yield_fixture(scope='session')
-def db(app):
-    """Session-wide test database."""
-    if os.path.exists(TestConfig.DB_PATH):
-        os.unlink(TestConfig.DB_PATH)
+@pytest.fixture(scope='session', autouse=True)
+def setup(db, app):
+    # From
+    # https://github.com/fastlineaustralia/cudless-testing/blob/master/tests/conftest.py
+    event.listen(_db.engine, 'connect', _do_connect)
+    event.listen(_db.engine, 'begin', _do_begin)
+    with app.test_request_context():
+        # Create nesting to prevent any commits/rollbacks within the DB
+        # setup to apply onto our top level transaction.
+        _db.session.begin_nested()
+        # TODO. Change SignallingSession to sa.session once
+        # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
+        # release.
+        event.listen(
+            SignallingSession,
+            'after_transaction_end',
+            _get_restart_savepoint_func(2)
+        )
 
-    _db.app = app
-    _db.session.remove()
-    _db.create_all()
+        # TODO. Change SignallingSession to sa.session once
+        # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
+        # release.
+        event.remove(
+            SignallingSession,
+            'after_transaction_end',
+            _get_restart_savepoint_func(2)
+        )
+        # End our nesting for DB setup.
+        _db.session.commit()
 
-    yield _db
+        yield
 
-    _db.drop_all()
-    os.unlink(TestConfig.DB_PATH)
-
-
-@pytest.yield_fixture(scope='session')
-def mixer(app):
-    class MyOwnMixer(Mixer):
-        # Custom Mixer for Flask init constructors.
-
-        def populate_target(self, values):
-            target = self.__scheme(**values)
-            return target
-
-    mixer = MyOwnMixer()
-    mixer.init_app(app)
-    users = mixer.cycle(5).blend(m.User)
-    exercises = mixer.cycle(10).blend(m.Exercise)
-    entries = mixer.cycle(6).blend(m.ExerciseEntry)
-    workouts = mixer.cycle(3).blend(m.Workout)
+        # Our final rollback so that we end our test session without
+        # leaving any DML traces in the DB.
+        _db.session.rollback()
 
 
-@pytest.fixture(scope='session')
-def user(db):
-    # TODO do we need db as param to link dependency?
-    user, errors = m.User.load({'username': 'admin', 'password': 'password'})
-    assert not errors
-    user.save()
-    return user
+@pytest.fixture(autouse=True)
+def nest_for_test(db):
+    # Nesting level 1 to rollback current test.
+    _db.session.begin_nested()
+
+    # Nesting level 2 to handle any commits/rollbacks within a test.
+    _db.session.begin_nested()
+    # TODO. Change SignallingSession to sa.session once
+    # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
+    # release.
+    event.listen(
+        SignallingSession,
+        'after_transaction_end',
+        _get_restart_savepoint_func(3)
+    )
+
+    yield
+
+    # TODO. Change SignallingSession to sa.session once
+    # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
+    # release.
+    event.remove(
+        SignallingSession,
+        'after_transaction_end',
+        _get_restart_savepoint_func(3)
+    )
+    # Rollback nesting level 2.
+    _db.session.rollback()
+
+    # Rollback nesting level 1.
+    _db.session.rollback()
+
+
+def _get_restart_savepoint_func(parent_levels):
+    def restart_savepoint(session, transaction):
+        node = transaction
+        # Ensure we're at the proper nesting level.
+        for i in range(parent_levels):
+            node = node.parent
+        if node is None:
+            session.expire_all()
+            session.begin_nested()
+
+    # We can't generate a function on the fly on every function call
+    # since SQLAlchemy's `event.remove` will look for the same function
+    # object which was previously added by `event.listen`. Hence we use
+    # a dict to save each generated function only once, and recall it
+    # from the dict later when `event.remove` is called.
+    return FUNC_MAP.setdefault(parent_levels, restart_savepoint)
+
+
+def _do_connect(dbapi_connection, connection_record):
+    '''See `this explanation`__ what this is needed for.
+
+    __ http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#serializable-isolation-savepoints-transactional-ddl
+    '''
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        # Disable pysqlite's emitting of the BEGIN statement entirely.
+        # Also stops it from emitting COMMIT before any DDL.
+        dbapi_connection.isolation_level = None
+
+
+def _do_begin(conn):
+    '''See `this explanation`__ what this is needed for.
+
+    __ http://docs.sqlalchemy.org/en/latest/dialects/sqlite.html#serializable-isolation-savepoints-transactional-ddl
+    '''
+    if isinstance(conn.connection.connection, sqlite3.Connection):
+        # Emit our own BEGIN.
+        conn.execute('BEGIN')
