@@ -3,19 +3,23 @@
 [![Build Status](https://travis-ci.com/SeanBE/strength.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength)
 
 ## Complete 1 a day.
+- API: Fix Exercise Order with additional field.  Test needed!
+
+- API: use factor boy.
 - API: test_models and test_mixins
-- API: Fix Exercise Order with additional field. Create User Workout relationship.
+- Create User Workout relationship.
 - ClIENT: Form validation.
 - CLIENT: Redirect to workouts once one is created or updated.
-- DOCKER: Weekly data volume backups.
+- DOCKER: Weekly data volume backups (https://gist.github.com/SeanBE/a193150741134ee1d0c2b683480fd3f9)
 - NGINX: Set up domain and SSL certificate from NameCheap.
 - NGINX: Does nginx work properly as a reverse proxy?
 - API: Logging format and add more logging.
 - CLIENT: Recently used exercises.
 
-docker run --rm --volumes-from data-postgres -v $(pwd):/backup ubuntu tar cvf /backup/data.tar /var/lib/postgresql/data
+
 
 - DOCKER figure out other volume without name.
+- CLIENT: Workout comment if empty dont show.
 
 - API: Identify missing issues (https://github.com/sloria/cookiecutter-flask)
 - DOCKER: Be able to deploy anywhere (whether its local or remote server..)

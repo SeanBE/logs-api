@@ -1,24 +1,31 @@
 import json
 import pytest
-from flask import jsonify, url_for
+from flask import url_for
+from pytest_factoryboy import register
+
 from app.models.exercise import Exercise
+from tests.factories import ExerciseFactory
+
+register(ExerciseFactory)
+register(ExerciseFactory, 'another_exercise')
 
 
-def test_get_exercises(client, db, user):
-    exercise_name = 'Bench Press'
-    exercise, errors = Exercise.load({'name': exercise_name})
-    exercise.save()
-
+@pytest.mark.parametrize("exercise__name", ["Some Exercise"])
+@pytest.mark.parametrize("another_exercise__name", ["Another Exercise"])
+def test_get_exercises(client, user, exercise, another_exercise):
     response = client.get(url_for('api.exercises'), headers={
         'Authorization': 'Bearer ' + user.generate_token()
     })
 
     assert response.status_code == 200
     exercises = json.loads(response.get_data(as_text=True))
-    assert exercise_name in [ex['name'] for ex in exercises]
+
+    names = [ex['name'] for ex in exercises]
+    assert 'Some Exercise' in names
+    assert 'Another Exercise' in names
 
 
-def test_post_exercise(client, db, user):
+def test_post_exercise(client, user):
 
     new_exercise = {'name': 'New Exercise'}
     response = client.post(url_for('api.exercises'), headers={
@@ -33,41 +40,33 @@ def test_post_exercise(client, db, user):
     assert exercise.id == json_response['id']
 
 
-
-def test_patch_exercise(client, db, user):
+def test_patch_exercise(client, user, exercise):
     updated_name = 'Version 2'
-    exercise, errors = Exercise.load({'name': 'Version 1'})
-    exercise.save()
+    update_data = {'name': updated_name}
 
     response = client.patch(url_for('api.exercise', id=exercise.id), headers={
         'Authorization': 'Bearer ' + user.generate_token()
-    }, data=json.dumps({'name': updated_name}), content_type='application/json')
+    }, data=json.dumps(update_data), content_type='application/json')
 
     assert response.status_code == 200
-    update = json.loads(response.get_data(as_text=True))
-    assert updated_name == update['name']
-    assert exercise.id == update['id']
+    json_response = json.loads(response.get_data(as_text=True))
+    assert exercise.id == json_response['id']
+    assert updated_name == json_response['name']
 
 
-def test_get_exercise(client, db, user):
-    exercise_name = 'Another Exercise'
-    exercise, errors = Exercise.load({'name': exercise_name})
-    exercise.save()
+def test_get_exercise(client, user, exercise):
 
     response = client.get(url_for('api.exercise', id=exercise.id), headers={
         'Authorization': 'Bearer ' + user.generate_token()
     })
 
     assert response.status_code == 200
-    data = json.loads(response.get_data(as_text=True))
-    assert data['id'] == exercise.id
-    assert data['name'] == exercise_name
+    json_response = json.loads(response.get_data(as_text=True))
+    assert json_response['id'] == exercise.id
+    assert json_response['name'] == exercise.name
 
 
-def test_delete_exercise(client, db, user):
-    name = 'Exercise to be deleted'
-    exercise, errors = Exercise.load({'name': name})
-    exercise.save()
+def test_delete_exercise(client, user, exercise):
 
     response = client.delete(url_for('api.exercise', id=exercise.id), headers={
         'Authorization': 'Bearer ' + user.generate_token()

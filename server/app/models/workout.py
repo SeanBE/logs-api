@@ -20,9 +20,10 @@ class WorkoutSchema(Schema):
     def fix_exercise_entries(self, data):
 
         exercises = []
-        for exercise in data['exercises']:
-            for index, s in enumerate(exercise['sets']):
-                s['set_num'] = index
+        for ex_index, exercise in enumerate(data['exercises']):
+            for set_index, s in enumerate(exercise['sets']):
+                s['ex_num'] = ex_index
+                s['set_num'] = set_index
                 s['exercise'] = exercise['name']
             exercises.extend(exercise['sets'])
 
