@@ -5,17 +5,17 @@ from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
 from app.auth import token_auth
-from app.models import Workout as W
+from app.models import Workout
 from app.models.workout import WorkoutSchema
 
 
-class Workout(Resource):
+class WorkoutItem(Resource):
 
     decorators = [token_auth.login_required]
 
     def get(self, id):
 
-        workout = W.query.get(id)
+        workout = Workout.query.get(id)
 
         if workout:
             current_app.logger.debug('Found workout {}'.format(workout.id))
@@ -27,7 +27,7 @@ class Workout(Resource):
         # content type needs to be application/json.
         data = request.get_json(silent=True)
         if data:
-            workout = W.query.get(id)
+            workout = Workout.query.get(id)
             if workout:
                 workout.update(**data)
                 return workout.dump().data, 200
@@ -37,12 +37,11 @@ class Workout(Resource):
 
     def delete(self, id):
 
-        workout = (W
+        workout = (Workout
                    .query
                    .get(id))
 
         if workout:
-            # TODO delete currently returns None?? why?
             workout.delete()
             current_app.logger.debug('Deleted workout {}'.format(workout.id))
             return None, 204
@@ -63,21 +62,24 @@ class WorkoutList(Resource):
     @use_kwargs(page_args)
     def get(self, limit, offset):
 
-        workout_list = (W
+        workout_list = (Workout
                         .query
-                        # .limit(limit)
-                        # .offset(offset)
                         .all())
 
-        workouts, errors = W.dump_list(workout_list)
+        workouts, errors = Workout.dump_list(workout_list)
 
         return workouts, 200
 
     def post(self):
 
-        data = request.get_json(force=True)
-        workout, errors = W.load(data)
-        # TODO if errors do not save!!
-        workout.save()
+        # content type needs to be application/json.
+        json_request = request.get_json(silent=True)
 
-        return workout.dump().data, 201
+        if json_request:
+            workout, errors = Workout.load(json_request)
+            if errors:
+                return jsonify(errors), 422
+
+            workout.save()
+            return workout.dump().data, 201
+        return make_response(jsonify(error="Bad JSON!"), 400)

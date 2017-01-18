@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_restful import Api
 
 from .tokens import Token
-from .workouts import WorkoutList, Workout
+from .workouts import WorkoutList, WorkoutItem
 from .users import User, Users
 from .exercises import ExerciseList, Exercise
 
@@ -12,7 +12,7 @@ api = Api(blueprint)
 
 # Add endpoints.
 api.add_resource(WorkoutList, '/workouts/', endpoint="workouts")
-api.add_resource(Workout, '/workouts/<id>', endpoint="workout")
+api.add_resource(WorkoutItem, '/workouts/<id>', endpoint="workout")
 
 api.add_resource(ExerciseList, '/exercises/', endpoint="exercises")
 api.add_resource(Exercise, '/exercises/<id>', endpoint="exercise")
