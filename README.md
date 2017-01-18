@@ -1,6 +1,6 @@
 # Strength
 
-[![Build Status](https://travis-ci.com/SeanBE/strength.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/strength)
+[![Build Status](https://travis-ci.com/SeanBE/logs-api.svg?token=YwoffpzcxpVgFc4sk6nY&branch=master)](https://travis-ci.com/SeanBE/logs-api)
 
 ## Complete 1 a day.
 - API: Fix Exercise Order with additional field.  Test needed!
@@ -28,6 +28,60 @@
 - DOCKER: Use Fabric for deployment?
 - DOCKER: Move all to alpine.
 - API: Cache with REDIS.
+
+@pytest.yield_fixture(scope='function')
+def session(db):
+    # connect to the database
+    connection = db.engine.connect()
+    # begin a non-ORM transaction
+    transaction = connection.begin()
+
+    # bind an individual session to the connection
+    # options = dict(bind=connection, binds={})
+    options = dict(bind=connection)
+    session = db.create_scoped_session(options=options)
+
+    # overload the default session with the session above
+    db.session = session
+
+    # overload session in factory classes
+    for name, cls in inspect.getmembers(factories, inspect.isclass):
+        if cls.__class__.__name__ == 'FactoryMetaClass':
+            cls._meta.sqlalchemy_session = session
+
+    yield session
+    session.close()
+    # rollback - everything that happened with the
+    # session above (including calls to commit())
+    # is rolled back.
+    transaction.rollback()
+    # return connection to the Engine
+    connection.close()
+
+
+@pytest.fixture()
+def test_client(app):
+    return app.test_client()
+
+
+@pytest.fixture()
+def item_data(session):
+    return factories.ItemFactory.create_batch(10)
+
+
+@pytest.fixture()
+def item_history_data(session):
+    return factories.ItemHistoryFactory.create_batch(10)
+
+
+@pytest.fixture()
+def api_url_data(session):
+    items = factories.ItemFactory.create_batch(2)
+    return {
+        'items': items,
+        'single_item_id': items[0].id
+    }
+
 
 ## MAYBE
 - settings_override on create_app?
