@@ -14,7 +14,6 @@ class WorkoutItem(Resource):
     decorators = [token_auth.login_required]
 
     def get(self, id):
-
         workout = Workout.query.get(id)
 
         if workout:
@@ -71,15 +70,25 @@ class WorkoutList(Resource):
         return workouts, 200
 
     def post(self):
+        """API endpoint for creating a workout.
 
-        # content type needs to be application/json.
-        json_request = request.get_json(silent=True)
+        :return: status code 405 - invalid JSON or invalid request type
+        :return: status code 400 - unsupported Content-Type
+        :return: status code 201 - successful submission
+        """
 
-        if json_request:
-            workout, errors = Workout.load(json_request)
-            if errors:
-                return jsonify(errors), 422
+        # Ensure post's Content-Type is supported
+        if request.is_json:
+            # Ensure data is a valid JSON
+            json_request = request.get_json(silent=True)
 
-            workout.save()
-            return workout.dump().data, 201
-        return make_response(jsonify(error="Bad JSON!"), 400)
+            if json_request:
+                workout, errors = Workout.load(json_request)
+
+                if errors:
+                    return make_response(jsonify(errors), 405)
+
+                workout.save()
+                return workout.dump().data, 201
+            return make_response(jsonify(error="Invalid Json!"), 405)
+        return make_response(jsonify(error="Unsupported Content-Type!"), 400)
