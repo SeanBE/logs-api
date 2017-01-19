@@ -53,23 +53,24 @@ def user():
 
 
 @pytest.fixture
-def workout():
-    return create_workout()
+def workout(user):
+    return create_workout(user)
 
 
 @pytest.fixture
-def workouts(request):
+def workouts(user, request):
     print(request.param)
-    return [create_workout() for _ in range(request.param)]
+    return [create_workout(user) for _ in range(request.param)]
 
 
-def create_workout():
+def create_workout(user):
     entries = []
     for _ in range(3):
         sets = f.SetEntryFactory.build_batch(3)
         entry = f.ExerciseEntryFactory.build(sets=sets)
         entries.append(entry)
     workout = f.WorkoutFactory.build(exercises=entries)
+    user.workouts.append(workout)
     return workout.save()
 
 @pytest.yield_fixture

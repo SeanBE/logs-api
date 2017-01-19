@@ -1,9 +1,8 @@
 import json
 from datetime import date, datetime
+
 import app.models as m
 from app.extensions import db
-
-# TODO update with factory-boy.
 
 
 def test_workout_update():
@@ -21,7 +20,10 @@ def test_workout_update():
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
         workout.exercises.append(entry)
 
-    db.session.add(workout)
+    user = m.User(username='abc', password='def')
+    user.workouts = [workout]
+
+    db.session.add(user)
     db.session.commit()
 
     saved_workout = m.Workout.query.first()
@@ -61,7 +63,10 @@ def test_db_relationships():
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
         workout.exercises.append(entry)
 
-    db.session.add(workout)
+    user = m.User(username='abc', password='def')
+    user.workouts = [workout]
+
+    db.session.add(user)
     db.session.commit()
 
     workout = m.Workout.query.first()
@@ -96,7 +101,10 @@ def test_json():
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
         workout.exercises.append(entry)
 
-    db.session.add(workout)
+    user = m.User(username='abc', password='def')
+    user.workouts = [workout]
+
+    db.session.add(user)
     db.session.commit()
 
     data, errors = workout.dump()

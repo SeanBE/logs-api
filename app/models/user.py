@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from .base import Base
 from app.extensions import db
+from app.models.workout import WorkoutSchema
 
 
 class UserSchema(Schema):
@@ -12,6 +13,7 @@ class UserSchema(Schema):
     id = fields.Integer(required=True, dump_only=True)
     username = fields.String(required=True)
     password = fields.String(required=True, load_only=True)
+    workouts = fields.Nested(WorkoutSchema, many=True)
 
     @post_load
     def make_user(self, data):
@@ -25,6 +27,7 @@ class User(Base):
     username = db.Column(db.String(32), nullable=False, unique=True)
     token = db.Column(db.String(64), nullable=True, unique=True)
     password_hash = db.Column(db.String(256), nullable=False)
+    workouts = db.relationship('Workout', backref='user', lazy='dynamic')
 
     @property
     def password(self):

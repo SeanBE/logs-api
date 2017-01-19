@@ -12,6 +12,7 @@ class WorkoutSchema(Schema):
     date_proposed = fields.Date(required=True)
     date_completed = fields.Date(allow_none=True)
     comment = fields.String(allow_none=True)
+
     # TODO rename to entries.
     exercises = fields.Nested(ExerciseEntrySchema, many=True, required=True)
 
@@ -26,6 +27,8 @@ class WorkoutSchema(Schema):
 class Workout(Base):
     __tablename__ = 'workout'
     __schema__ = WorkoutSchema
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     comment = db.Column(db.Text)
     date_completed = db.Column(db.Date)
@@ -48,6 +51,6 @@ class Workout(Base):
                 for key, value in new_set.items():
                     if value is not None:
                         setattr(db_set, key, value)
-    
+
         kwargs.pop('exercises', None)
         return super(Base, self).update(**kwargs)

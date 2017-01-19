@@ -1,4 +1,4 @@
-from flask import request, jsonify, current_app, make_response
+from flask import request, jsonify, current_app, make_response, g
 from flask_restful import Resource
 
 from webargs import fields, validate
@@ -92,7 +92,7 @@ class WorkoutList(Resource):
 
                 if errors:
                     return make_response(jsonify(errors), 405)
-
+                workout.user_id = g.current_user.id
                 workout.save()
                 current_app.logger.info('Created new workout [{}]'.format(id))
                 return workout.dump().data, 201

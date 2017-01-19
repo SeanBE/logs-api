@@ -52,6 +52,7 @@ def test_post_workout(client, user, exercise1, exercise2, exercise3):
     assert json_response['date_completed'] is None
     assert json_response['date_proposed'] == new_workout['date_proposed']
     assert json_response['exercises'] == new_workout['exercises']
+    assert user.workouts.count() == 1
 
 
 def test_get_workout(client, user, workout):
@@ -64,6 +65,7 @@ def test_get_workout(client, user, workout):
     workout_dump = workout.dump().data
     assert workout_dump['date_proposed'] == json_response['date_proposed']
     assert workout_dump['exercises'] == json_response['exercises']
+    assert user.workouts.count() == 1
 
 
 @pytest.mark.parametrize('workouts', [(3)], indirect=True)
@@ -76,6 +78,7 @@ def test_get_all_workouts(client, user, workouts):
     assert response.status_code == 200
     json_response = json.loads(response.get_data(as_text=True))
     assert len(json_response) == len(workouts)
+    assert user.workouts.count() == len(workouts)
 
 
 def test_delete_workout(client, user, workout):
@@ -88,6 +91,7 @@ def test_delete_workout(client, user, workout):
     assert response.content_type == 'application/json'
     assert str(response.data) == "b''"
     assert m.Workout.query.get(workout.id) is None
+    assert user.workouts.count() == 0
 
 
 def test_patch_workout(client, db, user, workout):
@@ -111,3 +115,4 @@ def test_patch_workout(client, db, user, workout):
     assert json_response['id'] == workout.id
     assert all(([all([s['weight'] == 100 for s in e['sets']])
                  for e in data['exercises']]))
+    assert user.workouts.first().id == workout.id
