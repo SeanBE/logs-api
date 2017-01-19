@@ -9,14 +9,17 @@ from app.models.exercise_entry import ExerciseEntrySchema
 class WorkoutSchema(Schema):
 
     id = fields.Integer(dump_only=True)
-
     date_proposed = fields.Date(required=True)
     date_completed = fields.Date(allow_none=True)
     comment = fields.String(allow_none=True)
+    # TODO rename to entries.
     exercises = fields.Nested(ExerciseEntrySchema, many=True, required=True)
 
     @post_load
     def make_workout(self, data):
+        for index, entry in enumerate(data['exercises']):
+            entry.ex_num = index
+
         return Workout(**data)
 
 
@@ -38,11 +41,13 @@ class Workout(Base):
 
         for entry, db_entry in zip(kwargs['exercises'], self.exercises):
             for key, value in entry['exercise'].items():
-                setattr(db_entry.exercise, key, value)
+                if value is not None:
+                    setattr(db_entry.exercise, key, value)
 
             for new_set, db_set in zip(entry['sets'], db_entry.sets):
                 for key, value in new_set.items():
-                    setattr(db_set, key, value)
-
+                    if value is not None:
+                        setattr(db_set, key, value)
+    
         kwargs.pop('exercises', None)
         return super(Base, self).update(**kwargs)

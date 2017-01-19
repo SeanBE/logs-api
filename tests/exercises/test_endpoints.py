@@ -36,6 +36,7 @@ def test_post_exercise(client, user):
     json_response = json.loads(response.get_data(as_text=True))
     assert new_exercise['name'] == json_response['name']
 
+    print(json_response)
     exercise = Exercise.query.filter_by(name=new_exercise['name']).first()
     assert exercise.id == json_response['id']
 

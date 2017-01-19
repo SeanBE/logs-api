@@ -5,7 +5,10 @@ from flask_sqlalchemy import SignallingSession
 
 from app import create_app
 from app.extensions import db as _db
+
 import app.models as models
+import tests.factories as f
+
 
 FUNC_MAP = {}
 
@@ -48,6 +51,26 @@ def user():
     user.save()
     return user
 
+
+@pytest.fixture
+def workout():
+    return create_workout()
+
+
+@pytest.fixture
+def workouts(request):
+    print(request.param)
+    return [create_workout() for _ in range(request.param)]
+
+
+def create_workout():
+    entries = []
+    for _ in range(3):
+        sets = f.SetEntryFactory.build_batch(3)
+        entry = f.ExerciseEntryFactory.build(sets=sets)
+        entries.append(entry)
+    workout = f.WorkoutFactory.build(exercises=entries)
+    return workout.save()
 
 @pytest.yield_fixture
 def client(app):

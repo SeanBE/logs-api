@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, post_load
 
 from .base import Base
 from app.extensions import db
-from app.models.exercise import ExerciseSchema
+from app.models.exercise import ExerciseSchema, Exercise
 from app.models.set_entry import SetEntrySchema
 
 
@@ -25,10 +25,16 @@ class ExerciseEntry(Base):
 
 
 class ExerciseEntrySchema(Schema):
-
     exercise = fields.Nested(ExerciseSchema, only=['name'])
     sets = fields.Nested(SetEntrySchema, many=True, required=True)
 
     @post_load
     def make_entry(self, data):
+        # TODO Cleaner please.
+        for index, entry in enumerate(data['sets']):
+            entry.set_num = index
+
+        exercise_name = data['exercise'].name
+        data['exercise'] = Exercise.query.filter_by(name=exercise_name).first()
+
         return ExerciseEntry(**data)
