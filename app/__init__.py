@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from app.config import config
 
 
@@ -14,24 +14,25 @@ def create_app(config_name=None):
 
     if not app.debug:
         app.logger.addHandler(logging.StreamHandler())
-        app.logger.setLevel(logging.DEBUG)
+        app.logger.setLevel(logging.INFO)
+
+    app.logger.info('Application running in {} mode'.format(config_name))
 
     # Import and init extensions
     from app.extensions import db, sentry
 
     db.init_app(app)
 
-    # TODO If production config.
-    # sentry.init_app(app, logging=True, level=logging.INFO)
+    if config_name is 'production':
+        sentry.init_app(app, logging=True, level=logging.INFO)
 
     # Import and register blueprints
     from app.api import blueprint as api
     app.register_blueprint(api, url_prefix='/1')
 
-    # TODO right way?
     @app.errorhandler(404)
     def page_not_found(e):
-        return jsonify(error=404, text=str(e)), 404
+        return make_response(jsonify(error=str(e)), 400)
 
     @app.after_request
     def after_request(response):

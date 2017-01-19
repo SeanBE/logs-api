@@ -17,9 +17,10 @@ class WorkoutItem(Resource):
         workout = Workout.query.get(id)
 
         if workout:
-            current_app.logger.debug('Found workout {}'.format(workout.id))
+            current_app.logger.info('Found workout {}'.format(id))
             return workout.dump().data, 200
 
+        current_app.logger.info('Unable to find workout [{}]'.format(id))
         return make_response(jsonify(error="Workout not found!"), 404)
 
     def patch(self, id):
@@ -29,9 +30,13 @@ class WorkoutItem(Resource):
             workout = Workout.query.get(id)
             if workout:
                 workout.update(**data)
+                current_app.logger.info('Updated workout [{}]'.format(id))
                 return workout.dump().data, 200
 
+            current_app.logger.info('Unable to find workout [{}]'.format(id))
             return make_response(jsonify(error="Workout not found!"), 404)
+
+        current_app.logger.info('Content-type not accepted')
         return make_response(jsonify(error="No data provided!"), 400)
 
     def delete(self, id):
@@ -42,10 +47,10 @@ class WorkoutItem(Resource):
 
         if workout:
             workout.delete()
-            current_app.logger.debug('Deleted workout {}'.format(workout.id))
+            current_app.logger.info('Deleted workout {}'.format(id))
             return None, 204
 
-        current_app.logger.debug('Could not find workout (id {})'.format(id))
+        current_app.logger.info('Could not find workout [{}]'.format(id))
         return make_response(jsonify(error="Could not delete workout!"), 404)
 
 
@@ -89,6 +94,11 @@ class WorkoutList(Resource):
                     return make_response(jsonify(errors), 405)
 
                 workout.save()
+                current_app.logger.info('Created new workout [{}]'.format(id))
                 return workout.dump().data, 201
+
+            current_app.logger.info('Invalid JSON')
             return make_response(jsonify(error="Invalid Json!"), 405)
+
+        current_app.logger.info('Unsupported Content-Type')
         return make_response(jsonify(error="Unsupported Content-Type!"), 400)

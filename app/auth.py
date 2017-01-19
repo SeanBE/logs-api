@@ -6,7 +6,7 @@ from app.extensions import user_auth, token_auth
 
 @user_auth.error_handler
 def unauthorized():
-    current_app.logger.debug('Unauthorized request via Basic Auth.')
+    current_app.logger.info('Unauthorized request via Basic Auth.')
     return (jsonify({'error': 'authentication required'}), 401,
             {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})
 
@@ -14,17 +14,15 @@ def unauthorized():
 @user_auth.verify_password
 def verify_password(username, password):
     if not username or not password:
-        current_app.logger.debug('Username ({}) or Password ({}) not provided'.format(username, password))
         return False
 
     user = User.query.filter_by(username=username).first()
     if user is None or not user.verify_password(password):
-        current_app.logger.debug('User not found!')
         return False
 
     user.save()
     g.current_user = user
-    current_app.logger.debug('User {} verfied.'.format(username))
+    current_app.logger.info('User {} verfied by password.'.format(user.username))
     return True
 
 
@@ -36,12 +34,11 @@ def verify_token(token, add_to_session=False):
 
     user = User.query.filter_by(token=token).first()
     if user is None:
-        current_app.logger.debug('User not found!')
         return False
 
     user.save()
     g.current_user = user
-    current_app.logger.debug('Token verfied for user {}.'.format(user.username))
+    current_app.logger.info('User {} verfied by token.'.format(user.username))
     if add_to_session:
         session['username'] = user.username
     return True
@@ -49,6 +46,6 @@ def verify_token(token, add_to_session=False):
 
 @token_auth.error_handler
 def token_error():
-    current_app.logger.debug('Unauthorized request via Token Auth.')
+    current_app.logger.info('Unauthorized request via Token Auth.')
     return (jsonify({'error': 'authentication required'}), 401,
             {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})

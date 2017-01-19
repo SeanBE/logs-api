@@ -7,7 +7,7 @@ class BaseConfig(object):
 
 
 class DevConfig(BaseConfig):
-    DEBUG = True
+    DEBUG = False
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'postgresql://sean:tracker@localhost/strength'
 
@@ -22,6 +22,7 @@ class TestConfig(BaseConfig):
 
 class ProdConfig(BaseConfig):
     WTF_CSRF_ENABLED = True
+
     DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
     DB_USER = os.environ.get('POSTGRES_USER', 'sean')
     DB_PW = os.environ.get('POSTGRES_PASSWORD', 'tracker')

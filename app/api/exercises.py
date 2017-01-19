@@ -17,7 +17,13 @@ class Exercise(Resource):
         exercise = Ex.query.get(id)
 
         if exercise:
+            current_app.logger.info(
+                'Getting exercise {}.'.format(id))
+
             return exercise.dump().data, 200
+
+        current_app.logger.info(
+            'Could not find exercise with id {}.'.format(id))
 
         return make_response(jsonify(error="Exercise not found!"), 404)
 
@@ -28,11 +34,16 @@ class Exercise(Resource):
             exercise = Ex.query.get(id)
             if exercise:
                 exercise.update(**data)
+                current_app.logger.info('Updated exercise [{}].'.format(id))
                 return exercise.dump().data, 200
+
+                current_app.logger.info(
+                    'Exercise not found [{}].'.format(id))
+
             return make_response(jsonify(error="Exercise not found!"), 404)
 
+        current_app.logger.info('Content-type not accepted.')
         return make_response(jsonify(error="No data provided!"), 400)
-
 
     def delete(self, id):
 
@@ -43,10 +54,11 @@ class Exercise(Resource):
         if exercise:
             error = exercise.delete()
             if error:
-                current_app.logger.debug('Error deleting {}'.format(exercise.id))
-                # TODO what do we do?
-                return make_response(jsonify(error="Could not delete exercise!"), 404)
+                current_app.logger.info(
+                    'Error deleting exercise [{}]'.format(id))
+                return make_response(jsonify(error), 404)
 
+            current_app.logger.info('Deleted exercise [{}]'.format(id))
             return None, 204
 
         current_app.logger.debug('Could not find exercise (id {})'.format(id))
@@ -70,11 +82,11 @@ class ExerciseList(Resource):
                             .all())
 
         exercises, errors = Ex.dump_list(exercises_result)
-
         return exercises, 200
 
     def post(self):
         # TODO get rid of force and add silent.
+        # TODO add logging.
         data = request.get_json(force=True)
         exercise, errors = Ex.load(data)
         exercise.save()
