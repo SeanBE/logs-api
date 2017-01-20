@@ -16,7 +16,7 @@ def create_app(config_name=None):
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
 
-    app.logger.info('Application running in {} mode'.format(config_name))
+    app.logger.info('Application running in {} mode (DEBUG IS {})'.format(config_name, str(app.debug)))
 
     # Import and init extensions
     from app.extensions import db, sentry
