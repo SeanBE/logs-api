@@ -1,3 +1,5 @@
+import sys
+import subprocess
 import datetime as dt
 from flask_script import Manager, Shell
 from mixer.backend.flask import Mixer
@@ -10,8 +12,6 @@ from app import models
 app = create_app()
 manager = Manager(app)
 
-# TODO gunicorn command (with loglevel/reload params)
-#  /usr/local/bin/gunicorn -reload --log-level DEBUG -w 4 -b 0.0.0.0:8001 wsgi:app
 
 @manager.command
 def setup_db():
@@ -21,22 +21,20 @@ def setup_db():
     user_data = {'username': 'admin', 'password': 'QDZFuq3g54ZRGwdt'}
     models.User.load(user_data).data.save()
 
-# TODO test and lint.
-# @manager.command
-# def test():
-#     """Runs unit tests."""
-#     tests = subprocess.call(['python', '-c', 'import tests; tests.run()'])
-#     sys.exit(tests)
-#
-#
-# @manager.command
-# def lint():
-#     """Runs code linter."""
-#     lint = subprocess.call(['flake8', '--ignore=E402', 'flack/',
-#                             'manage.py', 'tests/']) == 0
-#     if lint:
-#         print('OK')
-#     sys.exit(lint)
+
+@manager.command
+def test():
+    tests = subprocess.call(['py.test'])
+    sys.exit(tests)
+
+
+@manager.command
+def lint():
+    lint = subprocess.call(['flake8', '--ignore=E402', 'app/',
+                            'manage.py', 'tests/']) == 0
+    if lint:
+        print('OK')
+    sys.exit(lint)
 
 
 @manager.command
