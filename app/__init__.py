@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
 from app.config import config
 
 
@@ -12,27 +12,15 @@ def create_app(config_name=None):
 
     app.config.from_object(config[config_name])
 
-    if not app.debug:
-        app.logger.addHandler(logging.StreamHandler())
-        app.logger.setLevel(logging.INFO)
+    configure_logging(app)
+    register_extensions(app)
+    register_blueprints(app)
 
     app.logger.info('Application running in {} mode (DEBUG IS {})'.format(config_name, str(app.debug)))
 
-    # Import and init extensions
-    from app.extensions import db, sentry
-
-    db.init_app(app)
-
-    if config_name is 'production':
-        sentry.init_app(app, logging=True, level=logging.INFO)
-
-    # Import and register blueprints
-    from app.api import blueprint as api
-    app.register_blueprint(api, url_prefix='/1')
-
     @app.errorhandler(404)
     def page_not_found(e):
-        return make_response(jsonify(error=str(e)), 400)
+        return (jsonify(message='Page Not Found', status=404), 404)
 
     @app.after_request
     def after_request(response):
@@ -44,3 +32,23 @@ def create_app(config_name=None):
         return response
 
     return app
+
+
+def configure_logging(app):
+    if not app.debug:
+        app.logger.addHandler(logging.StreamHandler())
+        app.logger.setLevel(logging.INFO)
+
+
+def register_blueprints(app):
+    from app.api import blueprint as api
+
+    app.register_blueprint(api, url_prefix='/1')
+
+
+def register_extensions(app):
+    from app.extensions import db, sentry
+
+    db.init_app(app)
+    if app.config['ENV'] is 'production':
+        sentry.init_app(app, logging=True, level=logging.INFO)

@@ -2,17 +2,22 @@ import os
 
 
 class BaseConfig(object):
+    ERROR_404_HELP = False
+    TRAP_HTTP_EXCEPTIONS = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'lwj2s1(f$7*)xx)e81203*21xa(hctg4ghlm0g*a98q1rfm*(!')
+    SECRET_KEY = os.environ.get(
+        'SECRET_KEY', 'lwj2s1(f$7*)xx)e81203*21xa(hctg4ghlm0g*a98q1rfm*(!')
 
 
 class DevConfig(BaseConfig):
+    ENV = 'development'
     DEBUG = False
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'postgresql://sean:tracker@localhost/strength'
 
 
 class TestConfig(BaseConfig):
+    ENV = 'testing'
     TESTING = True
     WTF_CSRF_ENABLED = False
     SERVER_NAME = 'localhost'
@@ -21,6 +26,7 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
+    ENV = 'production'
     WTF_CSRF_ENABLED = True
 
     DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
