@@ -7,6 +7,8 @@ from webargs.flaskparser import use_kwargs
 from app.auth import token_auth
 from app.models import Exercise as Ex
 
+from .errors import ResourceDoesNotExist
+
 
 class Exercise(Resource):
 
@@ -29,10 +31,8 @@ class Exercise(Resource):
 
             return exercise.dump().data, 200
 
-        current_app.logger.info(
-            'Could not find exercise with id {}.'.format(id))
-
-        return make_response(jsonify(error="Exercise not found!"), 404)
+        raise ResourceDoesNotExist(
+            'Exercise with ID [{}] does not exist.'.format(id))
 
     def patch(self, id):
         """API endpoint for updating an exercise
@@ -54,10 +54,8 @@ class Exercise(Resource):
                 current_app.logger.info('Updated exercise [{}].'.format(id))
                 return exercise.dump().data, 200
 
-                current_app.logger.info(
-                    'Exercise not found [{}].'.format(id))
-
-            return make_response(jsonify(error="Exercise not found!"), 404)
+            raise ResourceDoesNotExist(
+                'Exercise with ID [{}] does not exist.'.format(id))
 
         current_app.logger.info('Content-type not accepted.')
         return make_response(jsonify(error="No data provided!"), 400)
@@ -86,8 +84,8 @@ class Exercise(Resource):
             current_app.logger.info('Deleted exercise [{}]'.format(id))
             return None, 204
 
-        current_app.logger.debug('Could not find exercise (id {})'.format(id))
-        return make_response(jsonify(error="Could not delete exercise!"), 404)
+        raise ResourceDoesNotExist(
+            'Exercise with ID [{}] does not exist.'.format(id))
 
 
 class ExerciseList(Resource):

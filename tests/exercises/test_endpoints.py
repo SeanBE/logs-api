@@ -36,7 +36,6 @@ def test_post_exercise(client, user):
     json_response = json.loads(response.get_data(as_text=True))
     assert new_exercise['name'] == json_response['name']
 
-    print(json_response)
     exercise = Exercise.query.filter_by(name=new_exercise['name']).first()
     assert exercise.id == json_response['id']
 
@@ -65,6 +64,20 @@ def test_get_exercise(client, user, exercise):
     json_response = json.loads(response.get_data(as_text=True))
     assert json_response['id'] == exercise.id
     assert json_response['name'] == exercise.name
+
+
+def test_exercise_not_found(client, user):
+
+    response = client.get(url_for('api.exercise', id=1), headers={
+        'Authorization': 'Bearer ' + user.generate_token()
+    })
+
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 404
+    assert json_response.keys() == {'status', 'message'}
+    assert json_response['status'] == 404
+    assert json_response['message'] == 'Exercise with ID [1] does not exist.'
 
 
 def test_delete_exercise(client, user, exercise):

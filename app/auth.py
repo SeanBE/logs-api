@@ -7,7 +7,7 @@ from app.extensions import user_auth, token_auth
 @user_auth.error_handler
 def unauthorized():
     current_app.logger.info('Unauthorized request via Basic Auth.')
-    return (jsonify({'error': 'authentication required'}), 401,
+    return (jsonify(message='Authentication Required', code=401), 401,
             {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})
 
 
@@ -22,7 +22,7 @@ def verify_password(username, password):
 
     user.save()
     g.current_user = user
-    current_app.logger.info('User {} verfied by password.'.format(user.username))
+    current_app.logger.info('User {} verified by password.'.format(user.username))
     return True
 
 
@@ -38,7 +38,7 @@ def verify_token(token, add_to_session=False):
 
     user.save()
     g.current_user = user
-    current_app.logger.info('User {} verfied by token.'.format(user.username))
+    current_app.logger.info('User {} verified by token.'.format(user.username))
     if add_to_session:
         session['username'] = user.username
     return True
@@ -47,5 +47,5 @@ def verify_token(token, add_to_session=False):
 @token_auth.error_handler
 def token_error():
     current_app.logger.info('Unauthorized request via Token Auth.')
-    return (jsonify({'error': 'authentication required'}), 401,
+    return (jsonify(message='Authentication Required', code=401), 401,
             {'WWW-Authenticate': 'Bearer realm="Authentication Required"'})
