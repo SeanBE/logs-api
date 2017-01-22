@@ -59,7 +59,6 @@ def workout(user):
 
 @pytest.fixture
 def workouts(user, request):
-    print(request.param)
     return [create_workout(user) for _ in range(request.param)]
 
 
