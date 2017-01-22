@@ -15,12 +15,9 @@ def create_app(config_name=None):
     configure_logging(app)
     register_extensions(app)
     register_blueprints(app)
+    register_errorhandlers(app)
 
     app.logger.info('Application running in {} mode (DEBUG IS {})'.format(config_name, str(app.debug)))
-
-    @app.errorhandler(404)
-    def page_not_found(e):
-        return (jsonify(message='Page Not Found', status=404), 404)
 
     @app.after_request
     def after_request(response):
@@ -38,6 +35,12 @@ def configure_logging(app):
     if not app.debug:
         app.logger.addHandler(logging.StreamHandler())
         app.logger.setLevel(logging.INFO)
+
+
+def register_errorhandlers(app):
+    def page_not_found(e):
+        return (jsonify(message='Page Not Found', status=404), 404)
+    app.errorhandler(404)(page_not_found)
 
 
 def register_blueprints(app):
