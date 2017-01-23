@@ -30,7 +30,6 @@ class ExerciseEntrySchema(Schema):
 
     @post_load
     def make_entry(self, data):
-        # TODO Cleaner please.
         for index, entry in enumerate(data['sets']):
             entry.set_num = index
 

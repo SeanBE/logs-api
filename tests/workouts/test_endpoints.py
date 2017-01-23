@@ -116,3 +116,17 @@ def test_patch_workout(client, db, user, workout):
     assert all(([all([s['weight'] == 100 for s in e['sets']])
                  for e in data['exercises']]))
     assert user.workouts.first().id == workout.id
+
+
+def test_workout_not_found(client, user):
+
+    response = client.get(url_for('api.workout', id=1), headers={
+        'Authorization': 'Bearer ' + user.generate_token()
+    })
+
+    json_response = json.loads(response.get_data(as_text=True))
+    print(json_response)
+    assert response.status_code == 404
+    assert json_response.keys() == {'status', 'message'}
+    assert json_response['status'] == 404
+    assert json_response['message'] == 'Workout with ID [1] does not exist.'

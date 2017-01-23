@@ -76,7 +76,6 @@ class Exercise(Resource):
             error = exercise.delete()
 
             if error:
-                # TODO shouldn't happen..
                 current_app.logger.info(
                     'Error deleting exercise [{}, {}]'.format(id, error))
                 return make_response(jsonify(error='Internal Server Error'), 500)
@@ -114,9 +113,6 @@ class ExerciseList(Resource):
         exercises, errors = Ex.dump_list(exercise_list)
 
         if errors:
-            # This should never happen...
-            # TODO make this universal.
-            # TODO send to sentry + log info.
             return make_response(jsonify(error='Internal Server Error'), 500)
 
         return exercises, 200
@@ -144,7 +140,7 @@ class ExerciseList(Resource):
 
                 exercise.save()
                 current_app.logger.info(
-                    'Created new exercise [{}]'.format(exercise.id))
+                    'Created new exercise \'{}\' [{}]'.format(exercise.name, exercise.id))
                 return exercise.dump().data, 201
 
             current_app.logger.info('Invalid JSON')

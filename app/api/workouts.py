@@ -7,6 +7,8 @@ from webargs.flaskparser import use_kwargs
 from app.auth import token_auth
 from app.models import Workout
 
+from .errors import ResourceDoesNotExist
+
 
 class WorkoutItem(Resource):
 
@@ -26,8 +28,8 @@ class WorkoutItem(Resource):
             current_app.logger.info('Found workout {}'.format(id))
             return workout.dump().data, 200
 
-        current_app.logger.info('Unable to find workout [{}]'.format(id))
-        return make_response(jsonify(error="Workout not found!"), 404)
+        raise ResourceDoesNotExist(
+            'Workout with ID [{}] does not exist.'.format(id))
 
     def patch(self, id):
         """API endpoint for updating a workout
@@ -49,8 +51,8 @@ class WorkoutItem(Resource):
                 current_app.logger.info('Updated workout [{}]'.format(id))
                 return workout.dump().data, 200
 
-            current_app.logger.info('Unable to find workout [{}]'.format(id))
-            return make_response(jsonify(error="Workout not found!"), 404)
+            raise ResourceDoesNotExist(
+                'Workout with ID [{}] does not exist.'.format(id))
 
         current_app.logger.info('Content-type not accepted')
         return make_response(jsonify(error="Unsupported Content-Type!"), 400)
@@ -69,9 +71,8 @@ class WorkoutItem(Resource):
 
         if workout:
             error = workout.delete()
-            
+
             if error:
-                # TODO shouldn't happen..
                 current_app.logger.info(
                     'Error deleting workout [{}, {}]'.format(id, error))
                 return make_response(jsonify(error='Internal Server Error'), 500)
@@ -79,8 +80,8 @@ class WorkoutItem(Resource):
             current_app.logger.info('Deleted workout {}'.format(id))
             return None, 204
 
-        current_app.logger.info('Could not find workout [{}]'.format(id))
-        return make_response(jsonify(error="Could not delete workout!"), 404)
+        raise ResourceDoesNotExist(
+            'Workout with ID [{}] does not exist.'.format(id))
 
 
 class WorkoutList(Resource):
@@ -109,8 +110,7 @@ class WorkoutList(Resource):
 
         if errors:
             # This should never happen...
-            # TODO make this universal.
-            # TODO send to sentry + log info.
+            # TODO sort out internal errrs... send to sentry + log info.
             return make_response(jsonify(error='Internal Server Error'), 500)
 
         return workouts, 200

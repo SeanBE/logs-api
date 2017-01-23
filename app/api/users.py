@@ -4,6 +4,8 @@ from flask_restful import Resource
 from app.auth import token_auth
 from app.models import User as Usr
 
+from .errors import ResourceDoesNotExist
+
 
 class Users(Resource):
 
@@ -74,8 +76,8 @@ class User(Resource):
                 current_app.logger.info('Updated user [{}]'.format(id))
                 return user.dump().data, 200
 
-            current_app.logger.info('Unable to find user [{}]'.format(id))
-            return make_response(jsonify(error="User not found!"), 404)
+            raise ResourceDoesNotExist(
+                'User with ID [{}] does not exist.'.format(id))
 
         current_app.logger.info('Content-type not accepted')
         return make_response(jsonify(error="Unsupported Content-Type!"), 400)
