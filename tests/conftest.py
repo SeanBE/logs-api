@@ -85,7 +85,6 @@ def client(app):
 
 @pytest.fixture(scope='session', autouse=True)
 def setup(db, app):
-    # From
     # https://github.com/fastlineaustralia/cudless-testing/blob/master/tests/conftest.py
     event.listen(_db.engine, 'connect', _do_connect)
     event.listen(_db.engine, 'begin', _do_begin)
@@ -93,18 +92,13 @@ def setup(db, app):
         # Create nesting to prevent any commits/rollbacks within the DB
         # setup to apply onto our top level transaction.
         _db.session.begin_nested()
-        # TODO. Change SignallingSession to sa.session once
-        # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
-        # release.
+
         event.listen(
             SignallingSession,
             'after_transaction_end',
             _get_restart_savepoint_func(2)
         )
 
-        # TODO. Change SignallingSession to sa.session once
-        # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
-        # release.
         event.remove(
             SignallingSession,
             'after_transaction_end',
@@ -127,9 +121,6 @@ def nest_for_test(db):
 
     # Nesting level 2 to handle any commits/rollbacks within a test.
     _db.session.begin_nested()
-    # TODO. Change SignallingSession to sa.session once
-    # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
-    # release.
     event.listen(
         SignallingSession,
         'after_transaction_end',
@@ -138,9 +129,6 @@ def nest_for_test(db):
 
     yield
 
-    # TODO. Change SignallingSession to sa.session once
-    # https://github.com/mitsuhiko/flask-sqlalchemy/pull/364 is in a
-    # release.
     event.remove(
         SignallingSession,
         'after_transaction_end',
