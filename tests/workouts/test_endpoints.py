@@ -26,7 +26,7 @@ def test_post_workout(client, user, exercise1, exercise2, exercise3):
 
     new_workout = {
         'date_proposed': '2016-11-11',
-        'exercises': [
+        'entries': [
             {'exercise': {'name': exercise1.name}, 'sets': [
                 {'reps': 8, 'weight': 0, 'comment': None},
                 {'reps': 10, 'weight': 0, 'comment': None},
@@ -51,7 +51,11 @@ def test_post_workout(client, user, exercise1, exercise2, exercise3):
     assert json_response['comment'] is None
     assert json_response['date_completed'] is None
     assert json_response['date_proposed'] == new_workout['date_proposed']
-    assert json_response['exercises'] == new_workout['exercises']
+
+    first_entry = json_response['entries'][0]
+    assert first_entry['exercise'].keys() == {'name', 'id'}
+    assert first_entry['sets'][0].keys() == {'weight', 'comment', 'id', 'reps'}
+
     assert user.workouts.count() == 1
 
 
@@ -64,7 +68,7 @@ def test_get_workout(client, user, workout):
     json_response = json.loads(response.get_data(as_text=True))
     workout_dump = workout.dump().data
     assert workout_dump['date_proposed'] == json_response['date_proposed']
-    assert workout_dump['exercises'] == json_response['exercises']
+    assert workout_dump['entries'] == json_response['entries']
     assert user.workouts.count() == 1
 
 
@@ -97,11 +101,10 @@ def test_delete_workout(client, user, workout):
 def test_patch_workout(client, db, user, workout):
     data = workout.dump().data
 
-    # TODO figure out how to test dates.. mock db for this test?
     data['date_completed'] = None
     data['date_proposed'] = None
 
-    for exercise in data['exercises']:
+    for exercise in data['entries']:
         for exercise_set in exercise['sets']:
             exercise_set['weight'] = 100
             exercise_set['comment'] = 'Good'
@@ -114,8 +117,9 @@ def test_patch_workout(client, db, user, workout):
     json_response = json.loads(response.get_data(as_text=True))
     assert json_response['id'] == workout.id
     assert all(([all([s['weight'] == 100 for s in e['sets']])
-                 for e in data['exercises']]))
+                 for e in data['entries']]))
     assert user.workouts.first().id == workout.id
+    print(json_response)
 
 
 def test_workout_not_found(client, user):

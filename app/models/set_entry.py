@@ -20,6 +20,8 @@ class SetEntry(Base):
 
 class SetEntrySchema(Schema):
 
+    id = fields.Integer(dump_only=True)
+
     reps = fields.Integer(required=True)
     weight = fields.Integer(allow_none=True)
     comment = fields.String(allow_none=True)

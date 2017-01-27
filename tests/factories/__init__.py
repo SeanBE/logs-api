@@ -33,10 +33,10 @@ class WorkoutFactory(BaseFactory):
     comment = factory.fuzzy.FuzzyText()
 
     @factory.post_generation
-    def exercises(self, create, extracted, **kwargs):
+    def entries(self, create, extracted, **kwargs):
         if extracted:
             for exercise in extracted:
-                self.exercises.append(exercise)
+                self.entries.append(exercise)
 
     class Meta:
         model = Workout

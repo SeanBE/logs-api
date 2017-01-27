@@ -18,7 +18,7 @@ def test_workout_update():
         s2 = m.SetEntry(reps=10, set_num=1, weight=0)
         s3 = m.SetEntry(reps=10, set_num=2, weight=0)
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
-        workout.exercises.append(entry)
+        workout.entries.append(entry)
 
     user = m.User(username='abc', password='def')
     user.workouts = [workout]
@@ -37,7 +37,7 @@ def test_workout_update():
     data['date_proposed'] = None
     data['date_completed'] = None
 
-    data['exercises'][0]['sets'][1]['weight'] = 100
+    data['entries'][0]['sets'][1]['weight'] = 100
 
     saved_workout.update(**data)
     updated, errors = saved_workout.dump()
@@ -45,7 +45,7 @@ def test_workout_update():
     assert updated['date_completed'] is None
     assert updated['date_proposed'] is not None
     assert updated['comment'] == data['comment']
-    assert updated['exercises'][0]['sets'][1]['weight'] == 100
+    assert updated['entries'][0]['sets'][1]['weight'] == 100
 
 
 def test_db_relationships():
@@ -61,7 +61,7 @@ def test_db_relationships():
         s2 = m.SetEntry(reps=10, set_num=1, weight=0)
         s3 = m.SetEntry(reps=10, set_num=2, weight=0)
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
-        workout.exercises.append(entry)
+        workout.entries.append(entry)
 
     user = m.User(username='abc', password='def')
     user.workouts = [workout]
@@ -75,7 +75,7 @@ def test_db_relationships():
     assert workout.date_completed is None
     assert workout.comment is None
 
-    for entry_index, entry in enumerate(workout.exercises):
+    for entry_index, entry in enumerate(workout.entries):
         assert entry.exercise in exercises
         assert entry.ex_num == entry_index
         assert entry.exercise_id in [e.id for e in exercises]
@@ -99,7 +99,7 @@ def test_json():
         s2 = m.SetEntry(reps=10, set_num=1, weight=0)
         s3 = m.SetEntry(reps=10, set_num=2, weight=0)
         entry = m.ExerciseEntry(ex_num=index, exercise=ex, sets=[s1, s2, s3])
-        workout.exercises.append(entry)
+        workout.entries.append(entry)
 
     user = m.User(username='abc', password='def')
     user.workouts = [workout]
@@ -113,9 +113,9 @@ def test_json():
     assert data['comment'] is None
     assert data['id'] == 1
 
-    sorted(workout.exercises, key=lambda x: x.ex_num)
+    sorted(workout.entries, key=lambda x: x.ex_num)
 
-    combined_exercises = zip(data['exercises'], workout.exercises)
+    combined_exercises = zip(data['entries'], workout.entries)
     for index, [json_entry, db_entry] in enumerate(combined_exercises):
         assert index == db_entry.ex_num
         assert json_entry['exercise']['name'] == db_entry.exercise.name

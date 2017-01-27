@@ -25,7 +25,10 @@ class ExerciseEntry(Base):
 
 
 class ExerciseEntrySchema(Schema):
-    exercise = fields.Nested(ExerciseSchema, only=['name'])
+
+    id = fields.Integer(dump_only=True)
+
+    exercise = fields.Nested(ExerciseSchema)
     sets = fields.Nested(SetEntrySchema, many=True, required=True)
 
     @post_load

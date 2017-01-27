@@ -68,7 +68,7 @@ def create_workout(user):
         sets = f.SetEntryFactory.build_batch(3)
         entry = f.ExerciseEntryFactory.build(sets=sets)
         entries.append(entry)
-    workout = f.WorkoutFactory.build(exercises=entries)
+    workout = f.WorkoutFactory.build(entries=entries)
     user.workouts.append(workout)
     return workout.save()
 

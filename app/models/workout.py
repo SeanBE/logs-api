@@ -9,16 +9,15 @@ from app.models.exercise_entry import ExerciseEntrySchema
 class WorkoutSchema(Schema):
 
     id = fields.Integer(dump_only=True)
+    user_id = fields.Integer(dumpy_only=True)
     date_proposed = fields.Date(required=True)
     date_completed = fields.Date(allow_none=True)
     comment = fields.String(allow_none=True)
-
-    # TODO rename to entries.
-    exercises = fields.Nested(ExerciseEntrySchema, many=True, required=True)
+    entries = fields.Nested(ExerciseEntrySchema, many=True, required=True)
 
     @post_load
     def make_workout(self, data):
-        for index, entry in enumerate(data['exercises']):
+        for index, entry in enumerate(data['entries']):
             entry.ex_num = index
 
         return Workout(**data)
@@ -34,15 +33,16 @@ class Workout(Base):
     date_completed = db.Column(db.Date)
     date_proposed = db.Column(db.Date, default=date.today(), nullable=False)
 
-    exercises = db.relationship('ExerciseEntry',
-                                backref="workout",
-                                cascade="all, delete-orphan",
-                                order_by=('(ExerciseEntry.ex_num)'))
+    entries = db.relationship('ExerciseEntry',
+                              backref="workout",
+                              cascade="all, delete-orphan",
+                              order_by=('(ExerciseEntry.ex_num)'))
 
     def update(self, commit=True, **kwargs):
         kwargs.pop('id', None)
+        kwargs.pop('user_id', None)
 
-        for entry, db_entry in zip(kwargs['exercises'], self.exercises):
+        for entry, db_entry in zip(kwargs['entries'], self.entries):
             for key, value in entry['exercise'].items():
                 if value is not None:
                     setattr(db_entry.exercise, key, value)
@@ -52,5 +52,5 @@ class Workout(Base):
                     if value is not None:
                         setattr(db_set, key, value)
 
-        kwargs.pop('exercises', None)
+        kwargs.pop('entries', None)
         return super(Base, self).update(**kwargs)
