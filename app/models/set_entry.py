@@ -16,6 +16,7 @@ class SetEntry(Base):
     reps = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text)
+    bodyweight = db.Column(db.Boolean, default=False)
 
 
 class SetEntrySchema(Schema):
@@ -25,6 +26,7 @@ class SetEntrySchema(Schema):
     reps = fields.Integer(required=True)
     weight = fields.Integer(allow_none=True)
     comment = fields.String(allow_none=True)
+    bodyweight = fields.Boolean(allow_none=True)
 
     @post_load
     def make_entry(self, data):

@@ -54,8 +54,7 @@ def test_post_workout(client, user, exercise1, exercise2, exercise3):
 
     first_entry = json_response['entries'][0]
     assert first_entry['exercise'].keys() == {'name', 'id'}
-    assert first_entry['sets'][0].keys() == {'weight', 'comment', 'id', 'reps'}
-
+    assert first_entry['sets'][0].keys() == {'weight', 'comment', 'id', 'reps', 'bodyweight'}
     assert user.workouts.count() == 1
 
 
