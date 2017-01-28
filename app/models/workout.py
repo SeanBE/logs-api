@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, post_load
 
 from .base import Base
 from app.extensions import db
+from app.models.exercise import Exercise
 from app.models.exercise_entry import ExerciseEntrySchema
 
 
@@ -43,9 +44,9 @@ class Workout(Base):
         kwargs.pop('user_id', None)
 
         for entry, db_entry in zip(kwargs['entries'], self.entries):
-            for key, value in entry['exercise'].items():
-                if value is not None:
-                    setattr(db_entry.exercise, key, value)
+            name = entry['exercise']['name']
+            # TODO is this right? You need at least an exercise name to update.
+            db_entry.exercise = Exercise.query.filter_by(name=name).first()
 
             for new_set, db_set in zip(entry['sets'], db_entry.sets):
                 for key, value in new_set.items():

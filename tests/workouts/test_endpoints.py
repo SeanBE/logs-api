@@ -118,7 +118,27 @@ def test_patch_workout(client, db, user, workout):
     assert all(([all([s['weight'] == 100 for s in e['sets']])
                  for e in data['entries']]))
     assert user.workouts.first().id == workout.id
-    print(json_response)
+
+
+@pytest.mark.parametrize("exercise1__name", ["Exercise 1"])
+def test_patch_workout_different_exercise(client, db, user, workout, exercise1):
+    data = workout.dump().data
+
+    data['date_completed'] = None
+    data['date_proposed'] = None
+
+    assert data['entries'][0]['exercise'] != exercise1.name
+    data['entries'][0]['exercise'] = exercise1.dump().data
+
+    response = client.patch(url_for('api.workout', id=workout.id), headers={
+        'Authorization': 'Bearer ' + user.generate_token()
+    }, data=json.dumps(data), content_type='application/json')
+
+    assert response.status_code == 200
+    json_response = json.loads(response.get_data(as_text=True))
+    assert json_response['id'] == workout.id
+    assert user.workouts.first().id == workout.id
+    assert json_response['entries'][0]['exercise']['name'] == exercise1.name
 
 
 def test_workout_not_found(client, user):
