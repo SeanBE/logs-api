@@ -1,5 +1,4 @@
 FROM python:3.5-slim
-MAINTAINER Sean Lofgren <lofgren.sean@gmail.com>
 
 RUN apt-get update && apt-get install -y \
     gcc \

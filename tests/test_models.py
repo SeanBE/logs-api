@@ -4,6 +4,7 @@ from datetime import date, datetime
 import app.models as m
 from app.extensions import db
 
+# TODO These tests can be reduced to mixin tests..
 
 def test_workout_update():
     workout = m.Workout(date_proposed=date.today())
